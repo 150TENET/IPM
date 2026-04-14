@@ -1,11 +1,32 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import AppNav from '@/components/AppNav.vue'
+
+const rota = useRoute()
+const eEntrar = computed(() => rota.name === 'entrar')
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div id="app" :class="{ 'layout-entrar': eEntrar }">
+    <AppNav v-if="!eEntrar" />
+    <main id="main">
+      <RouterView />
+    </main>
+    <footer v-if="!eEntrar" id="footer">
+      Plano de Recuperação e Resiliência · União Europeia
+    </footer>
+  </div>
 </template>
 
-<style scoped></style>
+<style>
+.layout-entrar {
+  display: block !important;
+  background: #d4d4d4 !important;
+  border: none !important;
+}
+
+.layout-entrar #main {
+  padding: 0 !important;
+}
+</style>

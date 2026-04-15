@@ -1,15 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import EntrarView from '@/views/EntrarView.vue'
+
 import InicioView from '@/views/InicioView.vue'
 import PaisesView from '@/views/PaisesView.vue'
 import PagamentosView from '@/views/PagamentosView.vue' 
 
 const rotas = [
-  {
-    path: '/entrar',
-    name: 'entrar',
-    component: EntrarView
-  },
   {
     path: '/',
     name: 'inicio',

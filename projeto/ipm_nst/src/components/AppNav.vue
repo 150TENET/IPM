@@ -25,7 +25,6 @@ const paisAtual = computed(() =>
     <div class="nav-right">
       <template v-if="rota.name === 'inicio'">
         <RouterLink to="/paises" class="go-country">Ir para Países →</RouterLink>
-        <button id="logout-btn" @click="$router.push('/entrar')">⇥ Sair</button>
       </template>
 
       <template v-else-if="rota.name === 'paises'">

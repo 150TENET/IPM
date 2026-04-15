@@ -4,7 +4,6 @@
 
 <template>
   <section>
-    <!-- Hero -->
     <div class="hero">
       <div class="hero-left">
         <h1>Plano de<br>Recuperação<br>e Resiliência</h1>
@@ -40,7 +39,6 @@
       </div>
     </div>
 
-    <!-- Painel informativo -->
     <section class="info-panel">
       <h2>O que é o Plano de Recuperação e Resiliência (PRR)?</h2>
       <p class="info-text">
@@ -71,19 +69,18 @@
       </div>
     </section>
 
-    <!-- Gráfico -->
     <section class="chart-card">
       <h2 class="chart-title">Evolução Temporal – Total de pagamentos feitos em cada área até ao início do ano indicado</h2>
       <p class="chart-subtitle">€ Milhões</p>
       <svg viewBox="0 0 1000 560" class="chart-svg" aria-label="Gráfico de área">
         <g stroke="#e5e9f4" stroke-width="2">
-          <line x1="90" y1="70"  x2="90"  y2="470"></line>
+          <line x1="90" y1="70" x2="90" y2="470"></line>
           <line x1="90" y1="470" x2="920" y2="470"></line>
           <line x1="90" y1="390" x2="920" y2="390"></line>
           <line x1="90" y1="310" x2="920" y2="310"></line>
           <line x1="90" y1="230" x2="920" y2="230"></line>
           <line x1="90" y1="150" x2="920" y2="150"></line>
-          <line x1="90" y1="70"  x2="920" y2="70"></line>
+          <line x1="90" y1="70" x2="920" y2="70"></line>
         </g>
         <path d="M160 130 L300 145 L460 300 L620 210 L780 405 L780 470 L160 470 Z" class="area-cyan-fill"/>
         <polyline points="160,130 300,145 460,300 620,210 780,405" class="area-cyan-line"/>

@@ -2,8 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import EntrarView from '@/views/EntrarView.vue'
 import InicioView from '@/views/InicioView.vue'
 import PaisesView from '@/views/PaisesView.vue'
-import DetalhePaisView from '@/views/DetalhePaisView.vue'
-import ComparacaoView from '@/views/ComparacaoView.vue'
+import PagamentosView from '@/views/PagamentosView.vue' 
 
 const rotas = [
   {
@@ -21,16 +20,11 @@ const rotas = [
     name: 'paises',
     component: PaisesView
   },
+
   {
-    path: '/paises/:codigo',
-    name: 'detalhe-pais',
-    component: DetalhePaisView,
-    props: true
-  },
-  {
-    path: '/comparacao',
-    name: 'comparacao',
-    component: ComparacaoView
+    path: '/pagamentos',
+    name: 'pagamentos',
+    component: PagamentosView
   }
 ]
 

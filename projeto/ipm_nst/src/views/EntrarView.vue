@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import euLogo from '@/assets/eu.png'
 
 const router = useRouter()
 
@@ -11,7 +12,7 @@ function entrar() {
 <template>
   <div class="entrar-fundo">
     <div class="entrar-cartao">
-      <img src="@/assets/eu.jpg" alt="Bandeira da União Europeia" class="entrar-logo">
+      <img :src="euLogo" alt="Bandeira da União Europeia">
       <h1 class="entrar-titulo">União Europeia</h1>
       <p class="entrar-subtitulo">Plano de Recuperação e Resiliência</p>
 

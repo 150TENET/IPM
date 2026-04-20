@@ -1,6 +1,5 @@
 <template>
   <div class="pagamentos-container">
-
     <!--  CARDS -->
     <div class="cards">
       <div class="card blue">
@@ -53,11 +52,7 @@
         </div>
       </div>
 
-      <input
-        type="text"
-        placeholder="Pesquisar por beneficiário ou categoria"
-        class="search"
-      />
+      <input type="text" placeholder="Pesquisar por beneficiário ou categoria" class="search" />
 
       <table>
         <thead>
@@ -81,31 +76,30 @@
         </tbody>
       </table>
     </div>
-
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+import { ref } from 'vue'
 
 const pagamentos = ref([
   {
     id: 1,
-    data: "01/04/2025",
-    nome: "Serviço Nacional de Saúde",
-    valor: "€50.166.150",
-    categoria: "Saúde",
-    status: "Em Progresso",
+    data: '01/04/2025',
+    nome: 'Serviço Nacional de Saúde',
+    valor: '€50.166.150',
+    categoria: 'Saúde',
+    status: 'Em Progresso',
   },
   {
     id: 2,
-    data: "16/07/2024",
-    nome: "Fundo Ambiental",
-    valor: "€1.570.670",
-    categoria: "Clima",
-    status: "Concluído",
+    data: '16/07/2024',
+    nome: 'Fundo Ambiental',
+    valor: '€1.570.670',
+    categoria: 'Clima',
+    status: 'Concluído',
   },
-]);
+])
 </script>
 
 <style scoped>
@@ -128,13 +122,22 @@ const pagamentos = ref([
   color: white;
 }
 
-.blue { background: #2f6fed; }
-.green { background: #1db954; }
-.purple { background: #a142f4; }
-.orange { background: #ff6a00; }
+.blue {
+  background: #2f6fed;
+}
+.green {
+  background: #1db954;
+}
+.purple {
+  background: #a142f4;
+}
+.orange {
+  background: #ff6a00;
+}
 
 /* TABS */
-.tabs, .subtabs {
+.tabs,
+.subtabs {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
@@ -183,7 +186,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   border-bottom: 1px solid #eee;
 }

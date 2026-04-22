@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRecuperacaoStore } from '@/stores/recuperacao'
 import euLogo from '@/assets/eu.png'
@@ -7,9 +7,21 @@ import euLogo from '@/assets/eu.png'
 const rota = useRoute()
 const store = useRecuperacaoStore()
 
-const paisAtual = computed(() =>
-  rota.params.codigo ? store.obterPaisPorCodigo(rota.params.codigo as string) : null
+const codigoPaisAtual = computed(() =>
+  typeof rota.params.country === 'string' ? rota.params.country : null
 )
+
+const paisAtual = computed(() =>
+  codigoPaisAtual.value ? store.obterPaisPorCodigo(codigoPaisAtual.value) : null
+)
+
+const emRotaDePais = computed(() => Boolean(codigoPaisAtual.value))
+
+onMounted(() => {
+  if (store.paises.length === 0) {
+    store.carregarPaises()
+  }
+})
 </script>
 
 <template>
@@ -31,7 +43,7 @@ const paisAtual = computed(() =>
         <RouterLink to="/" class="nav-back">← Voltar a Geral</RouterLink>
       </template>
 
-      <template v-else-if="rota.name === 'detalhe-pais'">
+      <template v-else-if="emRotaDePais">
         <div v-if="paisAtual" class="nav-country-badge">
           <span>{{ paisAtual.flag }}</span>
           <span>{{ paisAtual.name }}</span>

@@ -19,11 +19,6 @@ const rotas = [
     component: PaisesView, // Sem moldura
   },
   {
-    path: '/pagamentos', // Movemos para aqui para ter a moldura e o país
-    name: 'pagamentos',
-    component: PagamentosView,
-  },
-  {
     path: '/:country', // O parâmetro do país (ex: /portugal)
     component: CountryChosenView, // ESTA É A TUA MOLDURA (Layout)
     children: [
@@ -40,7 +35,12 @@ const rotas = [
         path: 'indicadores', // Relativo: /:country/indicadores
         name: 'indicadores',
         component: IndicadoresView,
-      }
+      },
+      {
+        path: 'pagamentos', // Relativo: /:country/pagamentos
+        name: 'pagamentos',
+        component: PagamentosView,
+      },
     ],
   },
 ]

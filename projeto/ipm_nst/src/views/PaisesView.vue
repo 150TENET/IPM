@@ -22,7 +22,7 @@ onMounted(() => {
       <RouterLink
         v-for="pais in store.paises"
         :key="pais.code"
-        :to="`/paises/${pais.code}`"
+        :to="`/${pais.code}`"
         class="country-card"
       >
         <div class="country-flag">{{ pais.flag }}</div>

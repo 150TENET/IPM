@@ -3,31 +3,44 @@ import { ref, computed } from 'vue'
 
 const API = '/api'
 
-export const useRecuperacaoStore = defineStore('recuperacao', () => {
-  
-  const paises = ref([])
-  const paisDetalhe = ref(null)
-  const indicadores = ref([])
-  const pagamentos = ref([])
-  const beneficiarios = ref([])
-  const marcos = ref([])
-  const aCarregar = ref(false)
-  const erro = ref(null)
+type Pais = {
+  code: string
+  name: string
+  flag: string
+}
 
-  
-  const obterPaisPorCodigo = computed(() => (codigo: string) =>
-    paises.value.find((p: any) => p.code === codigo)
+export const useRecuperacaoStore = defineStore('recuperacao', () => {
+  const paises = ref<Pais[]>([])
+  const paisDetalhe = ref<Pais | null>(null)
+  const indicadores = ref<unknown[]>([])
+  const pagamentos = ref<unknown[]>([])
+  const beneficiarios = ref<unknown[]>([])
+  const marcos = ref<unknown[]>([])
+  const aCarregar = ref(false)
+  const erro = ref<string | null>(null)
+
+  const obterPaisPorCodigo = computed(
+    () => (codigo: string) => paises.value.find((p) => p.code === codigo),
   )
 
-  
   async function carregarPaises() {
     aCarregar.value = true
     erro.value = null
     try {
       const res = await fetch(`${API}/countries`)
-      paises.value = await res.json()
+      if (!res.ok) {
+        throw new Error(`Falha na API de países (${res.status})`)
+      }
+
+      const dados = await res.json()
+      if (!Array.isArray(dados)) {
+        throw new Error('Formato inválido para a lista de países')
+      }
+
+      paises.value = dados
     } catch (e) {
-      erro.value = 'Erro ao carregar países'
+      const mensagem = e instanceof Error ? e.message : 'Erro desconhecido'
+      erro.value = `Erro ao carregar países: ${mensagem}`
     } finally {
       aCarregar.value = false
     }
@@ -40,7 +53,7 @@ export const useRecuperacaoStore = defineStore('recuperacao', () => {
       const res = await fetch(`${API}/countries?code=${codigo}`)
       const dados = await res.json()
       paisDetalhe.value = dados[0] ?? null
-    } catch (e) {
+    } catch {
       erro.value = 'Erro ao carregar detalhe do país'
     } finally {
       aCarregar.value = false
@@ -68,10 +81,20 @@ export const useRecuperacaoStore = defineStore('recuperacao', () => {
   }
 
   return {
-    paises, paisDetalhe, indicadores,
-    pagamentos, beneficiarios, marcos, aCarregar, erro,
+    paises,
+    paisDetalhe,
+    indicadores,
+    pagamentos,
+    beneficiarios,
+    marcos,
+    aCarregar,
+    erro,
     obterPaisPorCodigo,
-    carregarPaises, carregarDetalhe, carregarIndicadores,
-    carregarPagamentos, carregarBeneficiarios, carregarMarcos
+    carregarPaises,
+    carregarDetalhe,
+    carregarIndicadores,
+    carregarPagamentos,
+    carregarBeneficiarios,
+    carregarMarcos,
   }
 })

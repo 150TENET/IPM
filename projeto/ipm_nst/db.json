@@ -3,5 +3,32 @@
     "jose": "cientista",
     "maria": "vereadora",
     "antonio": "estudante"
-  }
+  },
+  "countries": [
+    {
+      "code": "pt",
+      "name": "Portugal",
+      "flag": "🇵🇹"
+    },
+    {
+      "code": "es",
+      "name": "Espanha",
+      "flag": "🇪🇸"
+    },
+    {
+      "code": "fr",
+      "name": "França",
+      "flag": "🇫🇷"
+    },
+    {
+      "code": "de",
+      "name": "Alemanha",
+      "flag": "🇩🇪"
+    },
+    {
+      "code": "it",
+      "name": "Itália",
+      "flag": "🇮🇹"
+    }
+  ]
 }

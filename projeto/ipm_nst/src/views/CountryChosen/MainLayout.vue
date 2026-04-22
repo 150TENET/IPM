@@ -1,16 +1,10 @@
+<script setup lang="ts">
+import ThreeWayBar from '@/components/3WayBar.vue'
+</script>
+
 <template>
   <div class="layout-dashboard">
-    <nav class="tabs-nav">
-      <router-link :to="`/${$route.params.country}/marcosandmetas`" class="tab-link">
-        Marcos e Metas
-      </router-link>
-      <router-link :to="`/${$route.params.country}/indicadores`" class="tab-link">
-        Indicadores
-      </router-link>
-      <router-link :to="`/${$route.params.country}/pagamentos`" class="tab-link">
-        Pagamentos
-      </router-link>
-    </nav>
+    <ThreeWayBar />
 
     <main class="content">
       <router-view />

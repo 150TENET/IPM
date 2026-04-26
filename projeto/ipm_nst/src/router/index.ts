@@ -5,6 +5,7 @@ import PaisesView from '@/views/PaisesView.vue'
 import PagamentosView from '@/views/PagamentosView.vue'
 import IndicadoresView from '@/views/CountryChosen/IndicadoresView.vue'
 import MarcosAndMetasView from '@/views/CountryChosen/MarcosAndMetasView.vue'
+import MarcosAndMetasTopView from '@/views/CountryChosen/MarcosAndMetasTopView.vue'
 import CountryChosenView from '@/views/CountryChosen/MainLayout.vue'
 
 const rotas = [
@@ -29,7 +30,11 @@ const rotas = [
       {
         path: 'marcosandmetas', // Sem a barra "/" no início para ser relativo ao pai
         name: 'marcosandmetas',
-        component: MarcosAndMetasView,
+        components:
+        {
+          default: MarcosAndMetasView,
+          top: MarcosAndMetasTopView, // Exibe MarcosAndMetasView na área "top" da moldura
+        }
       },
       {
         path: 'indicadores', // Relativo: /:country/indicadores

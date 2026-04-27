@@ -1,380 +1,490 @@
-<script setup lang="ts">
-// Página inicial - sem lógica por enquanto
-</script>
-
 <template>
-  <section>
-    <div class="hero">
-      <div class="hero-left">
-        <h1>Plano de<br>Recuperação<br>e Resiliência</h1>
-        <p class="subtitle">
+  <div class="inicio">
+
+    <!-- HERO SECTION-->
+    <section class="hero">
+      <div class="hero__left">
+        <h1 class="hero__title">
+          Plano de<br />Recuperação<br />e Resiliência
+        </h1>
+        <p class="hero__subtitle">
           Visualiza como os fundos estão a ser investidos, gastos
           e impactam a recuperação económica da Europa.
         </p>
-        <div class="stats-grid">
-          <div class="stat-pill green">Clima – 37%</div>
-          <div class="stat-pill purple">Digital – 20%</div>
-          <div class="stat-pill yellow">Educação – 15%</div>
-          <div class="stat-pill blue">Saúde – 10%</div>
-          <div class="stat-pill orange">Infraestruturas – 18%</div>
-          <div class="stat-pill gray">27 Estados-Membro</div>
+
+        <div class="hero__tags">
+          <span class="tag tag--green">Clima - 37%</span>
+          <span class="tag tag--purple">Digital - 20%</span>
+          <span class="tag tag--beige">Educação - 15%</span>
+          <span class="tag tag--teal">Saúde - 10%</span>
+          <span class="tag tag--salmon">Infraestruturas - 18%</span>
+          <span class="tag tag--white">27 Estados-Membro</span>
         </div>
       </div>
 
-      <div class="hero-right">
-        <div class="top-graphic">
-          <div class="pie-wrapper">
-            <div class="pie-label label-top">€225 mil milhões</div>
-            <div class="pie-label label-left">€548 mil milhões</div>
-            <div class="pie-label label-right">€723.8 mil milhões</div>
-            <div class="pie-chart"></div>
-          </div>
-          <div class="legend">
-            <div class="legend-item"><span class="dot available"></span><span>Total Disponível</span></div>
-            <div class="legend-item"><span class="dot committed"></span><span>Total Comprometido</span></div>
-            <div class="legend-item"><span class="dot paid"></span><span>Total Desembolsado</span></div>
-          </div>
+      <div class="hero__right">
+        <div class="chart-wrapper">
+          <PieChart :data="pieData" />
         </div>
-        <div class="execution-box">% de Execução – 34.7%</div>
-      </div>
-    </div>
 
-    <section class="info-panel">
-      <h2>O que é o Plano de Recuperação e Resiliência (PRR)?</h2>
-      <p class="info-text">
-        O PRR é um programa de aplicação nacional, que visa implementar um conjunto de reformas e investimentos
-        destinados a repor o crescimento económico sustentado após a pandemia. Financiado pela União Europeia
-        através do mecanismo NextGenerationEU, o plano foca-se em preparar o país para os desafios do futuro,
-        com especial ênfase na transição climática e na transformação digital.
-      </p>
-      <div class="info-columns">
-        <div class="info-box">
-          <h3>Objetivos Principais</h3>
-          <ul>
-            <li>Mitigação do impacto: Neutralizar os efeitos económicos e sociais negativos causados pela crise pandémica.</li>
-            <li>Sustentabilidade futura: Reformar a economia para que seja mais resiliente, inclusiva e preparada para crises futuras.</li>
-            <li>A Dupla Transição: Acelerar em simultâneo a neutralidade carbónica e a modernização tecnológica.</li>
-            <li>Coesão Territorial: Reduzir as desigualdades entre regiões e promover o emprego de qualidade.</li>
-          </ul>
-        </div>
-        <div class="info-box">
-          <h3>Compromissos Mínimos</h3>
-          <ul>
-            <li>Meta Verde (37%): Pelo menos 37% de cada plano nacional deve ser investido em objetivos climáticos e biodiversidade.</li>
-            <li>Meta Digital (20%): Um mínimo de 20% do orçamento deve ser dedicado à digitalização de empresas e serviços públicos.</li>
-            <li>Reformas Estruturais: O dinheiro só é libertado se o país implementar reformas reais nas suas instituições e leis.</li>
-            <li>Não Prejudicar (DNSH): O investimento não pode causar danos significativos ao meio ambiente.</li>
-          </ul>
+        <div class="execucao-card">
+          <span class="execucao-label">% de Execução - 34.7%</span>
         </div>
       </div>
     </section>
 
-    <section class="chart-card">
-      <h2 class="chart-title">Evolução Temporal – Total de pagamentos feitos em cada área até ao início do ano indicado</h2>
-      <p class="chart-subtitle">€ Milhões</p>
-      <svg viewBox="0 0 1000 560" class="chart-svg" aria-label="Gráfico de área">
-        <g stroke="#e5e9f4" stroke-width="2">
-          <line x1="90" y1="70" x2="90" y2="470"></line>
-          <line x1="90" y1="470" x2="920" y2="470"></line>
-          <line x1="90" y1="390" x2="920" y2="390"></line>
-          <line x1="90" y1="310" x2="920" y2="310"></line>
-          <line x1="90" y1="230" x2="920" y2="230"></line>
-          <line x1="90" y1="150" x2="920" y2="150"></line>
-          <line x1="90" y1="70" x2="920" y2="70"></line>
-        </g>
-        <path d="M160 130 L300 145 L460 300 L620 210 L780 405 L780 470 L160 470 Z" class="area-cyan-fill"/>
-        <polyline points="160,130 300,145 460,300 620,210 780,405" class="area-cyan-line"/>
-        <path d="M160 235 L300 225 L460 390 L620 315 L780 425 L780 470 L160 470 Z" class="area-red-fill"/>
-        <polyline points="160,235 300,225 460,390 620,315 780,425" class="area-red-line"/>
-        <path d="M160 340 L300 345 L460 385 L620 375 L780 448 L780 470 L160 470 Z" class="area-purple-fill"/>
-        <polyline points="160,340 300,345 460,385 620,375 780,448" class="area-purple-line"/>
-        <g class="axis-text">
-          <text x="58" y="475">0</text>
-          <text x="42" y="395">500</text>
-          <text x="28" y="315">1000</text>
-          <text x="28" y="235">1500</text>
-          <text x="28" y="155">2000</text>
-          <text x="28" y="75">2500</text>
-        </g>
-        <g class="axis-text">
-          <text x="145" y="505">Clima</text>
-          <text x="275" y="505">Digital</text>
-          <text x="455" y="505">Saúde</text>
-          <text x="585" y="505">Educação</text>
-          <text x="730" y="505">Infraestruturas</text>
-        </g>
-        <g class="legend-text">
-          <circle cx="390" cy="535" r="6" class="purple-ball"/>
-          <text x="404" y="540">Jan 2023</text>
-          <circle cx="510" cy="535" r="6" class="red-ball"/>
-          <text x="524" y="540">Jan 2024</text>
-          <circle cx="630" cy="535" r="6" class="cyan-ball"/>
-          <text x="644" y="540">Jan 2025</text>
-        </g>
-      </svg>
+    <!-- o que é o PRR -->
+    <section class="prr-info">
+      <div class="prr-info__card">
+        <h2 class="prr-info__title">
+          O que é o Plano de Recuperação e Recuperação e Resiliência(PRR)?
+        </h2>
+        <p class="prr-info__desc">
+          O PRR é um programa de aplicação nacional, que visa implementar um conjunto de reformas e investimentos destinados
+          a repor o crescimento económico sustentado após a pandemia. Financiado pela União Europeia através do mecanismo
+          NextGenerationEU, o plano foca-se em preparar o país para os desafios do futuro, com especial ênfase na transição
+          climática e na transformação digital.
+        </p>
+
+        <div class="prr-info__grid">
+          <div class="prr-info__col">
+            <h3><span class="icon">↗</span> Objetivos Principais</h3>
+            <ul>
+              <li><strong>Mitigação de Impacto:</strong> Neutralizar os efeitos económicos e sociais negativos causados pela crise pandémica.</li>
+              <li><strong>Sustentabilidade Futura:</strong> Reformar as economias para que sejam mais resilientes, inclusivas e preparadas para crises futuras.</li>
+              <li><strong>A Dupla Transição:</strong> Acelerar em simultâneo a neutralidade carbónica e a modernização tecnológica.</li>
+              <li><strong>Coesão Territorial:</strong> Reduzir as desigualdades entre regiões e promover o emprego de qualidade.</li>
+            </ul>
+          </div>
+
+          <div class="prr-info__col">
+            <h3><span class="icon">✓</span> Compromissos Mínimos</h3>
+            <ul>
+              <li><strong>Meta Verde (37%):</strong> Pelo menos 37% de cada plano nacional deve ser investido em objetivos climáticos e biodiversidade.</li>
+              <li><strong>Meta Digital (20%):</strong> Um mínimo de 20% do orçamento deve ser dedicado à digitalização de empresas e serviços públicos.</li>
+              <li><strong>Reformas Estruturais:</strong> O dinheiro só é libertado se o país implementar reformas reais nas suas instituições e leis.</li>
+              <li><strong>Não Prejudicar (DNSH):</strong> Garantia de que nenhum investimento causa danos significativos ao meio ambiente (Do No Significant Harm).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </section>
-  </section>
+
+    <!-- EVOLUÇÃO TEMPORAL-->
+    <section class="evolucao">
+      <h2 class="evolucao__title">
+        Evolução Temporal - Total de pagamentos feitos em cada área até ao início<br />do ano indicado
+      </h2>
+      <div class="evolucao__chart">
+        <LineChart :data="lineData" />
+      </div>
+    </section>
+
+  </div>
 </template>
 
+<script setup lang="ts">
+import { computed, h, defineComponent } from 'vue'
+
+// ─── PIE CHART ────────────────────────────────────────────
+const PieChart = defineComponent({
+  name: 'PieChart',
+  props: { data: Array },
+  setup(props) {
+    return () => {
+      const size = 300
+      const cx = size / 2
+      const cy = size / 2
+      const r = 110
+      const innerR = 0
+
+      const total = (props.data as any[]).reduce((s: number, d: any) => s + d.value, 0)
+      let cumAngle = -Math.PI / 2
+
+      const slices = (props.data as any[]).map((d: any) => {
+        const angle = (d.value / total) * 2 * Math.PI
+        const startAngle = cumAngle
+        const endAngle = cumAngle + angle
+        cumAngle = endAngle
+
+        const x1 = cx + r * Math.cos(startAngle)
+        const y1 = cy + r * Math.sin(startAngle)
+        const x2 = cx + r * Math.cos(endAngle)
+        const y2 = cy + r * Math.sin(endAngle)
+        const largeArc = angle > Math.PI ? 1 : 0
+
+        const midAngle = startAngle + angle / 2
+        const lx = cx + (r + 28) * Math.cos(midAngle)
+        const ly = cy + (r + 28) * Math.sin(midAngle)
+
+        const path = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`
+
+        return { path, color: d.color, label: d.label, value: d.display, lx, ly, midAngle }
+      })
+
+      return h('svg', {
+        viewBox: `0 0 ${size} ${size}`,
+        style: 'width:100%;max-width:300px;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.15))'
+      }, [
+        // 3D effect layers
+        ...[6, 5, 4, 3, 2, 1].map(i =>
+          h('g', { style: `transform: translateY(${i * 2}px)` },
+            slices.map(s =>
+              h('path', {
+                d: s.path,
+                fill: s.color,
+                opacity: 0.25,
+                style: 'filter: brightness(0.7)'
+              })
+            )
+          )
+        ),
+        // Main slices
+        ...slices.map(s =>
+          h('path', { d: s.path, fill: s.color, stroke: '#f0f0f0', 'stroke-width': '1.5' })
+        ),
+        // Labels
+        ...slices.filter(s => s.value).map(s =>
+          h('text', {
+            x: s.lx,
+            y: s.ly,
+            'text-anchor': 'middle',
+            'dominant-baseline': 'middle',
+            style: 'font-size:9px;font-family:inherit;fill:#1a2a5e;font-weight:600'
+          }, s.value)
+        )
+      ])
+    }
+  }
+})
+
+const pieData = computed(() => [
+  { value: 723.8, display: '€723.8 mil milhões', color: '#8b8fd8', label: 'Total Disponível' },
+  { value: 648,   display: '€648 mil milhões',   color: '#f4857a', label: 'Total Comprometido' },
+  { value: 225,   display: '€225 mil milhões',   color: '#5dd9d0', label: 'Total Desembolsado' },
+])
+
+// ─── LINE CHART ───────────────────────────────────────────
+const LineChart = defineComponent({
+  name: 'LineChart',
+  props: { data: Object },
+  setup(props) {
+    return () => {
+      const W = 800, H = 340
+      const padL = 60, padR = 40, padT = 20, padB = 60
+      const chartW = W - padL - padR
+      const chartH = H - padT - padB
+
+      const categories = ['Clima', 'Digital', 'Saúde', 'Educação', 'Infraestruturas']
+      const series = (props.data as any).series as Array<{ label: string; color: string; values: number[] }>
+      const maxVal = 3000
+
+      const xPos = (i: number) => padL + (i / (categories.length - 1)) * chartW
+      const yPos = (v: number) => padT + chartH - (v / maxVal) * chartH
+
+      const yTicks = [0, 500, 1000, 1500, 2000, 2500, 3000]
+
+      const areaPath = (vals: number[]) => {
+        const pts = vals.map((v, i) => `${xPos(i)},${yPos(v)}`).join(' L ')
+        const bot = vals.map((_, i) => `${xPos(i)},${yPos(0)}`).reverse().join(' L ')
+        return `M ${pts.split(' L ')[0]} L ${pts.split(' L ').slice(1).join(' L ')} L ${bot} Z`
+      }
+
+      const linePath = (vals: number[]) =>
+        vals.map((v, i) => `${i === 0 ? 'M' : 'L'} ${xPos(i)} ${yPos(v)}`).join(' ')
+
+      return h('svg', {
+        viewBox: `0 0 ${W} ${H}`,
+        style: 'width:100%;'
+      }, [
+        // Gradient defs
+        h('defs', {},
+          series.map(s =>
+            h('linearGradient', { id: `grad-${s.label.replace(' ', '')}`, x1: '0', y1: '0', x2: '0', y2: '1' }, [
+              h('stop', { offset: '0%', 'stop-color': s.color, 'stop-opacity': '0.35' }),
+              h('stop', { offset: '100%', 'stop-color': s.color, 'stop-opacity': '0.02' }),
+            ])
+          )
+        ),
+
+        // Grid lines
+        ...yTicks.map(v =>
+          h('line', {
+            x1: padL, y1: yPos(v), x2: padL + chartW, y2: yPos(v),
+            stroke: '#ccc', 'stroke-width': '0.5', 'stroke-dasharray': '3,3'
+          })
+        ),
+
+        // Y axis labels
+        ...yTicks.map(v =>
+          h('text', {
+            x: padL - 8, y: yPos(v),
+            'text-anchor': 'end', 'dominant-baseline': 'middle',
+            style: 'font-size:10px;fill:#666;font-family:inherit'
+          }, v.toString())
+        ),
+
+        // Y axis title
+        h('text', {
+          x: 12, y: padT + chartH / 2,
+          'text-anchor': 'middle',
+          transform: `rotate(-90, 12, ${padT + chartH / 2})`,
+          style: 'font-size:10px;fill:#888;font-family:inherit'
+        }, '€ Milhões'),
+
+        // Areas
+        ...series.map(s =>
+          h('path', {
+            d: areaPath(s.values),
+            fill: `url(#grad-${s.label.replace(' ', '')})`,
+          })
+        ),
+
+        // Lines
+        ...series.map(s =>
+          h('path', {
+            d: linePath(s.values),
+            fill: 'none', stroke: s.color, 'stroke-width': '2',
+          })
+        ),
+
+        // Dots
+        ...series.flatMap(s =>
+          s.values.map((v, i) =>
+            h('circle', {
+              cx: xPos(i), cy: yPos(v), r: 4,
+              fill: 'white', stroke: s.color, 'stroke-width': '2'
+            })
+          )
+        ),
+
+        // X axis labels
+        ...categories.map((c, i) =>
+          h('text', {
+            x: xPos(i), y: H - padB + 18,
+            'text-anchor': 'middle',
+            style: 'font-size:11px;fill:#444;font-family:inherit'
+          }, c)
+        ),
+
+        // Legend
+        ...series.flatMap((s, i) => {
+          const lx = W / 2 - 120 + i * 100
+          const ly = H - 12
+          return [
+            h('circle', { cx: lx, cy: ly, r: 4, fill: 'none', stroke: s.color, 'stroke-width': '1.5', 'stroke-dasharray': '2,2' }),
+            h('text', { x: lx + 8, y: ly, 'dominant-baseline': 'middle', style: 'font-size:10px;fill:#555;font-family:inherit' }, s.label)
+          ]
+        })
+      ])
+    }
+  }
+})
+
+const lineData = computed(() => ({
+  series: [
+    { label: 'Jan 2023', color: '#a5aee8', values: [240, 170, 90, 110, 30] },
+    { label: 'Jan 2024', color: '#f4a08a', values: [1100, 1150, 590, 910, 310] },
+    { label: 'Jan 2025', color: '#5dd9d0', values: [2320, 2210, 1270, 1860, 620] },
+  ]
+}))
+</script>
+
 <style scoped>
+/* ── Base ── */
+.inicio {
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background: #e8eaed;
+  min-height: 100vh;
+  color: #1a2a5e;
+}
+
+/* ── HERO ── */
 .hero {
-  display: grid;
-  grid-template-columns: 470px 1fr;
-  column-gap: 80px;
-  align-items: start;
-  padding: 86px 96px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 80px;
+  gap: 40px;
+  min-height: 80vh;
 }
 
-.hero-left h1 {
-  margin: 0;
-  font-size: 66px;
-  line-height: 0.98;
+.hero__left {
+  flex: 1;
+  max-width: 520px;
+}
+
+.hero__title {
+  font-size: 3.6rem;
   font-weight: 800;
-  color: #31499a;
-  letter-spacing: -1px;
-}
-
-.subtitle {
-  margin-top: 14px;
-  max-width: 390px;
-  font-size: 15px;
-  line-height: 1.3;
-  color: #9d9d9d;
-}
-
-.stats-grid {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(2, 145px);
-  gap: 8px 14px;
-}
-
-.stat-pill {
-  min-height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 6px 10px;
-  border-radius: 5px;
-  border: 1px solid rgba(70, 70, 70, 0.16);
-  font-size: 13px;
   line-height: 1.1;
-  color: #565656;
+  color: #1a2a5e;
+  margin: 0 0 20px;
 }
 
-.green { background: #a8d5b6; }
-.purple { background: #b7b1ea; }
-.yellow { background: #e6c89f; }
-.blue { background: #a9d5df; }
-.orange { background: #dfb0a8; }
-.gray { background: #e8e8e8; }
+.hero__subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 32px;
+  max-width: 400px;
+  line-height: 1.6;
+}
 
-.hero-right {
+.hero__tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 440px;
+}
+
+.tag {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.tag--green   { background: #b8e6c4; color: #1a4a2e; }
+.tag--purple  { background: #d4c9f0; color: #3a1a6e; }
+.tag--beige   { background: #e8d8b0; color: #4a3010; }
+.tag--teal    { background: #a8ddd8; color: #0a3a36; }
+.tag--salmon  { background: #f0c4bc; color: #5a1a14; }
+.tag--white   { background: #ffffff; color: #333; }
+
+.hero__right {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 8px;
+  gap: 24px;
 }
 
-.top-graphic {
-  display: flex;
-  align-items: center;
-  gap: 18px;
+.chart-wrapper {
+  width: 100%;
+  max-width: 320px;
 }
 
-.pie-wrapper {
-  position: relative;
-  width: 295px;
-  height: 220px;
+.execucao-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px 32px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
 }
 
-.pie-chart {
-  position: absolute;
-  top: 8px;
-  left: 38px;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: conic-gradient(
-    #7e6df0 0 43%,
-    #f18b84 43% 84%,
-    #48b9d4 84% 100%
-  );
-  box-shadow: inset 0 -12px 0 rgba(0, 0, 0, 0.08);
-}
-
-.pie-label {
-  position: absolute;
-  font-size: 13px;
-  color: #31499a;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.label-top {
-  top: 0;
-  left: 58px;
-}
-
-.label-left {
-  left: 8px;
-  bottom: 18px;
-}
-
-.label-right {
-  right: -2px;
-  bottom: 38px;
-}
-
-.legend {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin-left: 6px;
-  font-size: 13px;
-  color: #9f9f9f;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.available { background: #7e6df0; }
-.committed { background: #f18b84; }
-.paid { background: #48b9d4; }
-
-.execution-box {
-  margin-top: 18px;
-  margin-left: 32px;
-  border: 1px solid #b2b8c6;
-  border-radius: 7px;
-  padding: 14px 24px;
-  color: #31499a;
-  font-size: 19px;
+.execucao-label {
+  font-size: 1.1rem;
   font-weight: 700;
-  background: transparent;
+  color: #1a2a5e;
 }
 
-.info-panel {
-  max-width: 730px;
-  margin: 16px auto 22px;
-  background: #6375b6;
-  border-radius: 6px;
-  padding: 18px 26px 24px;
+/* ── PRR INFO ── */
+.prr-info {
+  padding: 0 80px 60px;
+}
+
+.prr-info__card {
+  background: #2d3f7a;
+  border-radius: 16px;
+  padding: 40px 48px;
   color: white;
 }
 
-.info-panel h2 {
-  margin: 0 0 14px;
-  font-size: 18px;
+.prr-info__title {
+  font-size: 1.15rem;
   font-weight: 700;
+  margin: 0 0 16px;
+  color: white;
 }
 
-.info-text {
-  margin: 0 0 14px;
-  line-height: 1.3;
-  font-size: 13px;
+.prr-info__desc {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 32px;
 }
 
-.info-columns {
+.prr-info__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 32px;
 }
 
-.info-box {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 5px;
-  padding: 14px 16px;
+.prr-info__col {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 24px 28px;
 }
 
-.info-box h3 {
-  margin: 0 0 10px;
-  font-size: 15px;
+.prr-info__col h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.info-box ul {
+.icon {
+  font-size: 1.1rem;
+}
+
+.prr-info__col ul {
+  list-style: disc;
+  padding-left: 18px;
   margin: 0;
-  padding-left: 16px;
-  font-size: 12px;
-  line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.chart-card {
-  max-width: 730px;
-  margin: 0 auto 40px;
-  background: #efefef;
-  border-radius: 6px;
-  padding: 10px 14px 18px;
+.prr-info__col li {
+  font-size: 0.87rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.82);
 }
 
-.chart-title {
-  margin: 0;
+/* ── EVOLUÇÃO TEMPORAL ── */
+.evolucao {
+  padding: 0 80px 80px;
+}
+
+.evolucao__card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px 48px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.evolucao__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2a5e;
   text-align: center;
-  color: #31499a;
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.1;
+  margin: 0 0 32px;
+  line-height: 1.4;
 }
 
-.chart-subtitle {
-  margin: 8px 0 0 34px;
-  color: #666;
-  font-size: 12px;
+.evolucao__chart {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 40px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
-.chart-svg {
-  width: 100%;
-  height: auto;
-  display: block;
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    padding: 40px 24px;
+  }
+  .hero__title { font-size: 2.4rem; }
+  .prr-info { padding: 0 24px 40px; }
+  .prr-info__grid { grid-template-columns: 1fr; }
+  .evolucao { padding: 0 24px 40px; }
 }
-
-.axis-text text,
-.legend-text text {
-  fill: #666;
-  font-size: 18px;
-}
-
-.area-cyan-fill {
-  fill: rgba(92, 210, 235, 0.22);
-}
-
-.area-cyan-line {
-  fill: none;
-  stroke: #60d2eb;
-  stroke-width: 2.5;
-}
-
-.area-red-fill {
-  fill: rgba(244, 151, 145, 0.14);
-}
-
-.area-red-line {
-  fill: none;
-  stroke: #f49791;
-  stroke-width: 2.5;
-}
-
-.area-purple-fill {
-  fill: rgba(134, 126, 255, 0.14);
-}
-
-.area-purple-line {
-  fill: none;
-  stroke: #867eff;
-  stroke-width: 2.5;
-}
-
-.purple-ball { fill: #867eff; }
-.red-ball { fill: #f49791; }
-.cyan-ball { fill: #60d2eb; }
 </style>

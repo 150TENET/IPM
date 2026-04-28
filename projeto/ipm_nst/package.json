@@ -13,7 +13,7 @@
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
     "format": "prettier --write --experimental-cli src/",
-    "backend": "json-server --watch db.json --port 3000"
+    "backend": "json-server --watch countrydb.json db.json --port 3000"
   },
   "dependencies": {
     "pinia": "^3.0.4",

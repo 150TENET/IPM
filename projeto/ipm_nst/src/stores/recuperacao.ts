@@ -3,19 +3,32 @@ import { ref, computed } from 'vue'
 
 const API = '/api'
 
-type Pais = {
+type Pais =
+{
   code: string
   name: string
   flag: string
 }
 
-export const useRecuperacaoStore = defineStore('recuperacao', () => {
+type Milestone =
+{
+  country: Pais
+  countryString: string
+  recipient: string
+  id: string
+  title: string
+  amount: number
+  description: string
+}
+
+export const useRecuperacaoStore = defineStore('recuperacao', () =>
+{
   const paises = ref<Pais[]>([])
   const paisDetalhe = ref<Pais | null>(null)
   const indicadores = ref<unknown[]>([])
   const pagamentos = ref<unknown[]>([])
   const beneficiarios = ref<unknown[]>([])
-  const marcos = ref<unknown[]>([])
+  const marcos = ref<Milestone[]>([])
   const aCarregar = ref(false)
   const erro = ref<string | null>(null)
 

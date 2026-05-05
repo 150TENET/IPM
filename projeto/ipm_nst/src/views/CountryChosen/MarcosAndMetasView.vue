@@ -2,7 +2,41 @@
 import BarChartCard from '@/components/country-dashboard/BarChartCard.vue'
 import PieChartCard from '@/components/country-dashboard/PieChartCard.vue'
 import MilestoneListCard from '@/components/country-dashboard/MilestoneListCard.vue'
-import { barCategories, pieSegments, milestoneItems } from './marcosAndMetas.data'
+import { barCategories, pieSegments } from './marcosAndMetas.data'
+import { onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useRecuperacaoStore } from '@/stores/recuperacao'
+import type { MilestoneItem } from './marcosAndMetas.data'
+
+interface ApiMilestone {
+  title?: string
+  name?: string
+  category?: string
+  date?: string
+  deadline?: string
+  progress?: number
+  status?: string
+}
+
+const route = useRoute()
+const store = useRecuperacaoStore()
+
+onMounted(() => {
+  if (route.params.country) {
+    store.carregarMarcos(route.params.country as string)
+  }
+})
+
+// Ensures the data follows the MilestoneItem structure expected by the card
+const fetchedMilestones = computed<MilestoneItem[]>(() => {
+  return (store.marcos as ApiMilestone[]).map((item) => ({
+    title: item.title || item.name || 'Sem título',
+    category: item.category || 'Geral',
+    date: item.date || item.deadline || '-',
+    progress: item.progress || 0,
+    status: (item.status as MilestoneItem['status']) || 'Pendente',
+  }))
+})
 </script>
 
 <template>
@@ -40,7 +74,7 @@ import { barCategories, pieSegments, milestoneItems } from './marcosAndMetas.dat
     <MilestoneListCard
       title="Lista de Marcos Recentes"
       subtitle="Implementações e metas acompanhadas recentemente"
-      :items="milestoneItems"
+      :items="fetchedMilestones"
     />
   </section>
 </template>

@@ -3,30 +3,37 @@ import { ref, computed } from 'vue'
 
 const API = '/api'
 
-export const usePrrStore = defineStore('prr', () => {
-  
-  const countries = ref([])
-  const countryDetail = ref(null)
-  const indicators = ref([])
-  const payments = ref([])
-  const beneficiaries = ref([])
-  const milestones = ref([])
-  const loading = ref(false)
-  const error = ref(null)
+type Country = {
+  code: string
+  name?: string
+  flag?: string
+  [key: string]: unknown
+}
 
-  
+export const usePrrStore = defineStore('prr', () => {
+
+  const countries = ref<Country[]>([])
+  const countryDetail = ref<Country | null>(null)
+  const indicators = ref<unknown[]>([])
+  const payments = ref<unknown[]>([])
+  const beneficiaries = ref<unknown[]>([])
+  const milestones = ref<unknown[]>([])
+  const loading = ref(false)
+  const error = ref<string | null>(null)
+
+
   const getCountryByCode = computed(() => (code: string) =>
-    countries.value.find((c: any) => c.code === code)
+    countries.value.find((c) => c.code === code)
   )
 
-  
+
   async function fetchCountries() {
     loading.value = true
     error.value = null
     try {
       const res = await fetch(`${API}/countries`)
       countries.value = await res.json()
-    } catch (e) {
+    } catch {
       error.value = 'Erro ao carregar países'
     } finally {
       loading.value = false
@@ -40,7 +47,7 @@ export const usePrrStore = defineStore('prr', () => {
       const res = await fetch(`${API}/countries?code=${code}`)
       const data = await res.json()
       countryDetail.value = data[0] ?? null
-    } catch (e) {
+    } catch {
       error.value = 'Erro ao carregar detalhe do país'
     } finally {
       loading.value = false

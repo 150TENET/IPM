@@ -89,9 +89,17 @@ export const useRecuperacaoStore = defineStore('recuperacao', () =>
   }
 
   async function carregarMarcos(codigoPais: string) {
+    // Ensure countries are loaded first
+    if (paises.value.length === 0) {
+      await carregarPaises()
+    }
+
     const pais = obterPaisPorCodigo.value(codigoPais)
     const nomePais = pais?.name
-    if (!nomePais) return
+    if (!nomePais) {
+      console.error(`Country not found for code: ${codigoPais}`)
+      return
+    }
 
     // Log for debugging
     console.log(`Fetching milestones for country: ${nomePais}`)

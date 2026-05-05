@@ -8,15 +8,6 @@ import { useRoute } from 'vue-router'
 import { useRecuperacaoStore } from '@/stores/recuperacao'
 import type { MilestoneItem } from './marcosAndMetas.data'
 
-interface ApiMilestone {
-  title?: string
-  name?: string
-  category?: string
-  date?: string
-  deadline?: string
-  progress?: number
-  status?: string
-}
 
 const route = useRoute()
 const store = useRecuperacaoStore()
@@ -29,12 +20,12 @@ onMounted(() => {
 
 // Ensures the data follows the MilestoneItem structure expected by the card
 const fetchedMilestones = computed<MilestoneItem[]>(() => {
-  return (store.marcos as ApiMilestone[]).map((item) => ({
-    title: item.title || item.name || 'Sem título',
-    category: item.category || 'Geral',
-    date: item.date || item.deadline || '-',
-    progress: item.progress || 0,
-    status: (item.status as MilestoneItem['status']) || 'Pendente',
+  return (store.marcos as unknown as Record<string, string | undefined>[]).map((item) => ({
+    title: item['Milestone/Target Name'] || item.title || item.name || 'Sem título',
+    category: item['Policy Pillars / REPowerEU']?.split(' | ')[0] || item.category || 'Geral',
+    date: item['Completion Year-Quarter'] || item.date || item.deadline || '-',
+    progress: item['Status'] === 'Fulfilled' ? 100 : (item['Status'] === 'Not Assessed' ? 0 : 50),
+    status: item['Status'] === 'Fulfilled' ? 'Concluído' : (item['Status'] === 'Not Assessed' ? 'Pendente' : 'Em progresso'),
   }))
 })
 </script>

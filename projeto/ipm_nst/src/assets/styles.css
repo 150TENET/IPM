@@ -21,7 +21,7 @@ a {
 }
 
 #main {
-  max-width: 1440px;
+  max-width: 80cqw;
   margin: 0 auto;
 }
 
@@ -31,7 +31,7 @@ a {
   font-size: 14px;
   padding: 24px 0;
   border-top: 1px solid #bfbfbf;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 /* NAVBAR */

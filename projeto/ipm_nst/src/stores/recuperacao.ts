@@ -89,8 +89,24 @@ export const useRecuperacaoStore = defineStore('recuperacao', () =>
   }
 
   async function carregarMarcos(codigoPais: string) {
-    const res = await fetch(`${API}/milestones?countryCode=${codigoPais}`)
-    marcos.value = await res.json()
+    const pais = obterPaisPorCodigo.value(codigoPais)
+    const nomePais = pais?.name
+    if (!nomePais) return
+
+    // Log for debugging
+    console.log(`Fetching milestones for country: ${nomePais}`)
+    try {
+      const res = await fetch(`${API}/milestones?Country=${nomePais}`)
+      if (!res.ok) {
+        console.error('Milestones fetch failed:', res.status)
+        return
+      }
+      const data = await res.json()
+      console.log('Milestones data:', data)
+      marcos.value = data
+    } catch (e) {
+      console.error('Failed to fetch milestones:', e)
+    }
   }
 
   return {

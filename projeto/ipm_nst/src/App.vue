@@ -25,8 +25,4 @@ import AppNav from '@/components/AppNav.vue'
   padding: 0 !important;
 }
 
-#app #footer {
-  max-height: 1vh !important;
-}
-
 </style>

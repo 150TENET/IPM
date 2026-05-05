@@ -24,8 +24,8 @@ import ThreeWayBar from '@/components/3WayBar.vue'
   overflow-y: auto;  /* Adds a vertical scrollbar if the content overflows */
 }
 
-.layout-dashboard {
-  max-height: 60vh;  /* 60% of the viewport height, adjust as needed */
+.layout-dashboard
+{
   overflow-y: auto;
 }
 </style>

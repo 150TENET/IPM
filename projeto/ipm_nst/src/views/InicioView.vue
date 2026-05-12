@@ -23,10 +23,7 @@
       </div>
 
       <div class="hero__right">
-        <div class="chart-wrapper">
-          <PieChart :data="pieData" />
-        </div>
-
+        <PieChart :data="pieData" />
         <div class="execucao-card">
           <span class="execucao-label">% de Execução - 34.7%</span>
         </div>
@@ -92,11 +89,10 @@ const PieChart = defineComponent({
   props: { data: Array },
   setup(props) {
     return () => {
-      const size = 300
+      const size = 260
       const cx = size / 2
       const cy = size / 2
-      const r = 110
-      const innerR = 0
+      const r = 100
 
       const total = (props.data as any[]).reduce((s: number, d: any) => s + d.value, 0)
       let cumAngle = -Math.PI / 2
@@ -113,45 +109,33 @@ const PieChart = defineComponent({
         const y2 = cy + r * Math.sin(endAngle)
         const largeArc = angle > Math.PI ? 1 : 0
 
-        const midAngle = startAngle + angle / 2
-        const lx = cx + (r + 28) * Math.cos(midAngle)
-        const ly = cy + (r + 28) * Math.sin(midAngle)
-
         const path = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`
 
-        return { path, color: d.color, label: d.label, value: d.display, lx, ly, midAngle }
+        return { path, color: d.color, label: d.label, display: d.display }
       })
 
-      return h('svg', {
-        viewBox: `0 0 ${size} ${size}`,
-        style: 'width:100%;max-width:300px;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.15))'
-      }, [
-        // 3D effect layers
-        ...[6, 5, 4, 3, 2, 1].map(i =>
-          h('g', { style: `transform: translateY(${i * 2}px)` },
-            slices.map(s =>
-              h('path', {
-                d: s.path,
-                fill: s.color,
-                opacity: 0.25,
-                style: 'filter: brightness(0.7)'
-              })
-            )
+      return h('div', { style: 'display:flex;align-items:center;gap:24px;' }, [
+        // Gráfico
+        h('svg', {
+          viewBox: `0 0 ${size} ${size}`,
+          style: 'width:320px;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.12))'
+        }, [
+          ...slices.map(s =>
+            h('path', { d: s.path, fill: s.color, stroke: '#f0f0f0', 'stroke-width': '1.5' })
           )
-        ),
-        // Main slices
-        ...slices.map(s =>
-          h('path', { d: s.path, fill: s.color, stroke: '#f0f0f0', 'stroke-width': '1.5' })
-        ),
-        // Labels
-        ...slices.filter(s => s.value).map(s =>
-          h('text', {
-            x: s.lx,
-            y: s.ly,
-            'text-anchor': 'middle',
-            'dominant-baseline': 'middle',
-            style: 'font-size:9px;font-family:inherit;fill:#1a2a5e;font-weight:600'
-          }, s.value)
+        ]),
+
+        // Legenda ao lado
+        h('div', { style: 'display:flex;flex-direction:column;gap:12px;' },
+          (props.data as any[]).map(d =>
+            h('div', { style: 'display:flex;align-items:center;gap:8px;' }, [
+              h('span', { style: `width:10px;height:10px;border-radius:50%;background:${d.color};flex-shrink:0;display:inline-block;` }),
+              h('div', {}, [
+                h('div', { style: 'font-size:11px;color:#555;' }, d.label),
+                h('div', { style: 'font-size:12px;font-weight:700;color:#1a2a5e;' }, d.display),
+              ])
+            ])
+          )
         )
       ])
     }

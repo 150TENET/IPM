@@ -13,7 +13,7 @@ const codigoPais = computed(() =>
 const separadores = [
   { label: 'Marcos e Metas', route: 'marcosandmetas' as TabRoute },
   { label: 'Indicadores', route: 'indicadores' as TabRoute },
-  { label: 'Pagamentos', route: 'pagamentos' as TabRoute },
+  { label: 'Desembolsos', route: 'pagamentos' as TabRoute },
 ]
 </script>
 

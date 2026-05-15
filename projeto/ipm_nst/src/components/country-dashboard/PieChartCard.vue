@@ -85,11 +85,11 @@ const pieStyle = computed(() => {
 }
 
 .pie-layout {
-  display: grid;
-  grid-template-columns: minmax(180px, 220px) 1fr;
-  gap: 18px;
+  display: flex;
+  gap: 24px;
   align-items: center;
   margin-top: 10px;
+  justify-content: center;
 }
 
 .pie-wrap {

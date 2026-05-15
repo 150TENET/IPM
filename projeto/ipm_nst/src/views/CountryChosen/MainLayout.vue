@@ -5,12 +5,10 @@ import ThreeWayBar from '@/components/3WayBar.vue'
 <template>
   <div class="layout-pie">
     <main class="content">
-      <router-view name="top" /> <!-- Or keep it as <router-view /> if not using named views -->
+      <router-view name="top" />
     </main>
   </div>
-
   <ThreeWayBar />
-
   <div class="layout-dashboard">
     <main class="content">
       <router-view name="default" />
@@ -20,12 +18,11 @@ import ThreeWayBar from '@/components/3WayBar.vue'
 
 <style scoped>
 .layout-pie {
-  max-height: 350px; /* Change this value to whatever height you need */
-  overflow-y: auto;  /* Adds a vertical scrollbar if the content overflows */
+  max-height: 350px;
+  overflow-y: auto;
 }
 
-.layout-dashboard
-{
+.layout-dashboard {
   overflow-y: auto;
 }
 </style>

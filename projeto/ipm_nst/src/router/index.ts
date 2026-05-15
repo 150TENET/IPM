@@ -7,6 +7,7 @@ import IndicadoresView from '@/views/CountryChosen/IndicadoresView.vue'
 import MarcosAndMetasView from '@/views/CountryChosen/MarcosAndMetasView.vue'
 import MarcosAndMetasTopView from '@/views/CountryChosen/MarcosAndMetasTopView.vue'
 import CountryChosenView from '@/views/CountryChosen/MainLayout.vue'
+import IndicadoresTopView from '@/views/CountryChosen/IndicadoresTopView.vue'
 
 const rotas = [
   {
@@ -36,10 +37,13 @@ const rotas = [
           top: MarcosAndMetasTopView, // Exibe MarcosAndMetasView na área "top" da moldura
         }
       },
-      {
-        path: 'indicadores', // Relativo: /:country/indicadores
+     {
+        path: 'indicadores',
         name: 'indicadores',
-        component: IndicadoresView,
+        components: {
+          default: IndicadoresView,
+          top: IndicadoresTopView,
+        }
       },
       {
         path: 'pagamentos', // Relativo: /:country/pagamentos

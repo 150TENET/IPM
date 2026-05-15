@@ -6,6 +6,7 @@ const props = defineProps<{
   title: string
   subtitle: string
   categories: BarCategory[]
+  horizontal?: boolean
 }>()
 
 const seriesNames = computed(() => props.categories[0]?.series.map((serie) => serie.name) ?? [])
@@ -15,8 +16,40 @@ const maxValue = computed(() => {
   return Math.max(100, ...values)
 })
 
+const ticksCount = 6
+
+const displayMax = computed(() => {
+  const v = maxValue.value
+  const baseStep = Math.ceil(v / ticksCount)
+  const pow = Math.pow(10, Math.max(0, Math.floor(Math.log10(baseStep))))
+  const step = Math.ceil(baseStep / pow) * pow
+  return step * ticksCount
+})
+
+const tickStep = computed(() => Math.round(displayMax.value / ticksCount))
+
+const ticks = computed(() => {
+  const arr = []
+  for (let i = 0; i <= ticksCount; i++) arr.push(i * tickStep.value)
+  return arr
+})
+
+function colorForSeries(name: string) {
+  // find first matching series color
+  for (const cat of props.categories) {
+    const s = cat.series.find((x) => x.name === name)
+    if (s && s.color) return s.color
+  }
+  // fallback palette
+  return name && name.toLowerCase().includes('austria') ? '#7FC8A9' : '#FFD54F'
+}
+
 function barHeight(value: number) {
   return `${(value / maxValue.value) * 100}%`
+}
+
+function barWidth(value: number) {
+  return `${(value / displayMax.value) * 100}%`
 }
 </script>
 
@@ -29,8 +62,8 @@ function barHeight(value: number) {
       </div>
     </header>
 
-    <div class="plot-shell">
-      <div class="y-axis" aria-hidden="true">
+    <div class="plot-shell" :class="{ horizontal: props.horizontal }">
+      <div v-if="!props.horizontal" class="y-axis" aria-hidden="true">
         <span>100</span>
         <span>75</span>
         <span>50</span>
@@ -38,8 +71,8 @@ function barHeight(value: number) {
         <span>0</span>
       </div>
 
-      <div class="plot-area">
-        <div class="grid-lines" aria-hidden="true">
+      <div :class="['plot-area', { 'horizontal-grid': props.horizontal }]">
+        <div v-if="!props.horizontal" class="grid-lines" aria-hidden="true">
           <span></span>
           <span></span>
           <span></span>
@@ -47,7 +80,7 @@ function barHeight(value: number) {
           <span></span>
         </div>
 
-        <div
+        <div v-if="!props.horizontal"
           class="bars-row"
           :style="{ gridTemplateColumns: `repeat(${categories.length}, minmax(0, 1fr))` }"
         >
@@ -69,12 +102,34 @@ function barHeight(value: number) {
             <p class="category-label">{{ category.label }}</p>
           </div>
         </div>
+
+        <!-- HORIZONTAL LAYOUT -->
+        <div v-if="props.horizontal" class="h-rows-wrapper">
+          <div class="h-top-axis" aria-hidden="true" :style="{ gridTemplateColumns: `200px repeat(${ticks.length - 1}, 1fr)` }">
+            <div></div>
+            <div v-for="(t,i) in ticks" :key="i" class="h-tick">{{ t }}</div>
+          </div>
+          <div class="h-unit">Milhões€</div>
+
+          <div class="h-rows">
+            <div v-for="category in categories" :key="category.label" class="h-row">
+              <div class="h-label">{{ category.label }}</div>
+              <div class="h-bars">
+                <div v-for="(serie, idx) in category.series" :key="`${category.label}-${serie.name}-h`" class="h-bar-wrap">
+                  <div class="h-bar" :style="{ width: barWidth(serie.value), background: serie.color ?? colorForSeries(serie.name) }">
+                    <span class="h-bar-value">{{ serie.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <footer class="legend" aria-label="Legenda dos gráficos">
       <span v-for="name in seriesNames" :key="name" class="legend-item">
-        <i :data-series="name"></i>
+        <i :style="{ background: colorForSeries(name) }"></i>
         {{ name }}
       </span>
     </footer>
@@ -199,6 +254,26 @@ function barHeight(value: number) {
   font-weight: 700;
   text-align: center;
 }
+
+/* Horizontal layout styles */
+.plot-shell.horizontal { grid-template-columns: 220px 1fr; }
+.h-rows { display:flex; flex-direction:column; gap:18px }
+.h-row { display:flex; align-items:center; gap:18px }
+.h-label { width:200px; color:#6b7280; font-weight:700 }
+.h-bars { flex:1; position:relative }
+.h-bar-wrap { margin-bottom:8px }
+.h-bar { height:28px; border-radius:6px; position:relative }
+.h-bar-value { position:absolute; right: -36px; top: 50%; transform: translateY(-50%); color:#6b7280; font-weight:700; }
+
+.h-bar::after { content: ''; position:absolute; inset:0; box-shadow: inset 0 -1px 0 rgba(255,255,255,0.24); border-radius:6px }
+
+/* horizontal top axis */
+.h-top-axis { display:grid; grid-template-columns: 200px repeat(5, 1fr); gap:0; align-items:center; margin-bottom:6px; color:#8b97a6; font-weight:700 }
+.h-top-axis .h-tick { text-align:right; padding-right:12px; font-size:13px }
+.h-unit { text-align:right; color:#8b97a6; font-weight:700; margin-bottom:6px }
+
+/* vertical dotted grid for horizontal layout */
+.plot-area.horizontal-grid { background-image: linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 120px 100%; }
 
 .legend {
   display: flex;

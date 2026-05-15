@@ -8,6 +8,7 @@ import MarcosAndMetasView from '@/views/CountryChosen/MarcosAndMetasView.vue'
 import MarcosAndMetasTopView from '@/views/CountryChosen/MarcosAndMetasTopView.vue'
 import CountryChosenView from '@/views/CountryChosen/MainLayout.vue'
 import IndicadoresTopView from '@/views/CountryChosen/IndicadoresTopView.vue'
+import ComparacaoView from '@/views/ComparacaoView.vue'
 
 const rotas = [
   {
@@ -19,6 +20,11 @@ const rotas = [
     path: '/paises',
     name: 'paises',
     component: PaisesView, // Sem moldura
+  },
+  {
+    path: '/comparacao',
+    name: 'comparacao',
+    component: ComparacaoView,
   },
   {
     path: '/:country', // O parâmetro do país (ex: /portugal)

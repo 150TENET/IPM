@@ -397,7 +397,7 @@ const topSetorPais2 = computed(() => {
       <div class="chart-panel">
         <BarChartCard
           title="Progresso por Pilar Estratégico"
-          subtitle="Percentagem de projetos Kohesio por categoria"
+          subtitle="Percentagem de projetos por categoria"
           :categories="progressoChartData"
         />
       </div>
@@ -407,7 +407,7 @@ const topSetorPais2 = computed(() => {
       <div class="chart-panel">
         <BarChartCard
           title="Investimento por Setor"
-          subtitle="Valor em milhões de euros (Kohesio)"
+          subtitle="Valor em milhões de euros"
           :horizontal="true"
           :categories="investimentoChartData"
         />

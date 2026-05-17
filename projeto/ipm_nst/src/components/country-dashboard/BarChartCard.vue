@@ -16,12 +16,10 @@ interface CategoryItem {
 const props = defineProps<{
   title: string;
   subtitle: string;
-  horizontal?: boolean;
   categories: CategoryItem[];
 }>()
 
-// --- 2. HEURÍSTICA DE INTERFACE: Cálculo automático da escala (Fim do Layout Quebrado) ---
-// Percorre todas as categorias e séries recebidas para encontrar o maior valor real (ex: 739.84)
+// --- 2. CÁLCULO DA ESCALA MÁXIMA ---
 const valorMaximoDoGrafico = computed(() => {
   let max = 0
   if (!props.categories || props.categories.length === 0) return 100
@@ -34,8 +32,6 @@ const valorMaximoDoGrafico = computed(() => {
     }
   })
 
-  // Se o maior valor for menor ou igual a 100, assume escala percentual padrão (0-100)
-  // Se for maior (como 739.84M €), adapta a escala dinamicamente para esse topo
   return max > 100 ? max : 100
 })
 </script>
@@ -47,36 +43,39 @@ const valorMaximoDoGrafico = computed(() => {
       <p class="chart-subtitle">{{ subtitle }}</p>
     </div>
 
-    <div :class="['chart-body', { 'is-horizontal': horizontal }]">
-      <div
-        v-for="item in categories"
-        :key="item.label"
-        class="chart-row"
-      >
-        <div class="category-label">{{ item.label || 'Outro' }}</div>
+    <div class="chart-scroll-container">
+      <div class="chart-body">
 
-        <div class="bars-group">
-          <div
-            v-for="series in item.series"
-            :key="series.name"
-            class="bar-wrapper"
-          >
-            <div class="bar-track">
-              <div
-                class="bar-fill"
-                :style="{
-                  // Divide o valor do projeto pelo máximo calculado para nunca estoirar o flexbox (HCI)
-                  width: `${(series.value / valorMaximoDoGrafico) * 100}%`,
-                  backgroundColor: series.color
-                }"
-              ></div>
+        <div
+          v-for="item in categories"
+          :key="item.label"
+          class="chart-column"
+        >
+          <div class="bars-group">
+            <div
+              v-for="series in item.series"
+              :key="series.name"
+              class="bar-wrapper"
+            >
+              <span class="value-text">
+                {{ series.value.toLocaleString() }}{{ valorMaximoDoGrafico > 100 ? 'M' : '%' }}
+              </span>
+
+              <div class="bar-track">
+                <div
+                  class="bar-fill"
+                  :style="{
+                    height: `${(series.value / valorMaximoDoGrafico) * 100}%`,
+                    backgroundColor: series.color
+                  }"
+                ></div>
+              </div>
             </div>
-
-            <span class="value-text">
-              {{ series.value.toLocaleString() }}{{ valorMaximoDoGrafico > 100 ? 'M €' : '%' }}
-            </span>
           </div>
+
+          <div class="category-label">{{ item.label || 'Outro' }}</div>
         </div>
+
       </div>
     </div>
 
@@ -94,9 +93,15 @@ const valorMaximoDoGrafico = computed(() => {
 </template>
 
 <style scoped>
+/* --- 3. CORREÇÃO: MOLDURA BRANCA, BORDAS ARREDONDADAS E SOMBRA --- */
 .bar-chart-card {
   font-family: sans-serif;
   width: 100%;
+  background-color: #ffffff; /* Fundo branco limpo */
+  border-radius: 16px;       /* Cantos arredondados iguais aos do gráfico de pizza */
+  padding: 24px;             /* Espaçamento interno para afastar o conteúdo das bordas */
+  box-shadow: 0 10px 24px rgba(20, 28, 55, 0.05); /* Sombra suave para efeito de elevação */
+  box-sizing: border-box;
 }
 
 .chart-header h4 {
@@ -107,73 +112,98 @@ const valorMaximoDoGrafico = computed(() => {
 }
 
 .chart-subtitle {
-  margin: 4px 0 20px 0;
+  margin: 4px 0 24px 0;
   font-size: 0.85rem;
   color: #94a3b8;
 }
 
+.chart-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
 .chart-body {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-end;
+  gap: 2rem;
+  min-width: 600px;
+  padding-top: 1.5rem;
+  border-bottom: 2px solid #f1f5f9;
 }
 
-.chart-row {
+.chart-column {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-}
-
-.category-label {
-  width: 180px;
-  font-weight: 700;
-  color: #334155;
-  font-size: 0.9rem;
-  word-wrap: break-word;
+  flex: 1;
+  justify-content: flex-end;
+  height: 100%;
 }
 
 .bars-group {
-  flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 200px;
+  margin-bottom: 8px;
 }
 
 .bar-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  width: 100%;
+  justify-content: flex-end;
+  height: 100%;
 }
 
 .bar-track {
-  flex: 1;
+  width: 20px;
+  height: 100%;
   background-color: #f1f5f9;
-  height: 12px;
-  border-radius: 99px;
+  border-radius: 99px 99px 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   overflow: hidden;
 }
 
 .bar-fill {
-  height: 100%;
-  border-radius: 99px;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  border-radius: 99px 99px 0 0;
+  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .value-text {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #475569;
-  min-width: 75px;
-  text-align: left;
+  margin-bottom: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.category-label {
+  text-align: center;
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.8rem;
+  margin-top: 12px;
+  min-height: 32px;
+  max-width: 120px;
+  word-wrap: break-word;
 }
 
 .chart-legend {
   display: flex;
   gap: 1.5rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #f1f5f9;
+  justify-content: center;
 }
 
 .legend-item {
@@ -183,25 +213,14 @@ const valorMaximoDoGrafico = computed(() => {
 }
 
 .legend-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
 }
 
 .legend-name {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #64748b;
-}
-
-@media (max-width: 768px) {
-  .chart-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  .category-label {
-    width: 100%;
-  }
 }
 </style>

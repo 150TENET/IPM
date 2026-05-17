@@ -44,7 +44,20 @@ const mapearPaisParaDB = (param: string): string => {
     de: 'germany', germany: 'germany',
     fr: 'france', france: 'france',
     nl: 'netherlands', islands: 'netherlands',
-    fi: 'finland', dk: 'denmark', ie: 'ireland'
+    fi: 'finland', dk: 'denmark', ie: 'ireland',
+    hr: 'croatia', croatia: 'croatia',
+    hu: 'hungary', hungary: 'hungary',
+    cz: 'czechia', czechia: 'czechia',
+    gr: 'greece', greece: 'greece',
+    lv: 'latvia', latvia: 'latvia',
+    lt: 'lithuania', lithuania: 'lithuania',
+    si: 'slovenia', slovenia: 'slovenia',
+    sk: 'slovakia', slovakia: 'slovakia',
+    cy: 'cyprus', cyprus: 'cyprus',
+    ee: 'estonia', estonia: 'estonia',
+    lu: 'luxembourg', luxembourg: 'luxembourg',
+    mt: 'malta', malta: 'malta'
+
   }
   return dicionario[p] || p
 }

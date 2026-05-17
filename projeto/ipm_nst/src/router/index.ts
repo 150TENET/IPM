@@ -2,13 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import InicioView from '@/views/InicioView.vue'
 import PaisesView from '@/views/PaisesView.vue'
-import PagamentosView from '@/views/PagamentosView.vue'
+import PagamentosView from '@/views/CountryChosen/PagamentosView.vue'
 import IndicadoresView from '@/views/CountryChosen/IndicadoresView.vue'
 import MarcosAndMetasView from '@/views/CountryChosen/MarcosAndMetasView.vue'
 import MarcosAndMetasTopView from '@/views/CountryChosen/MarcosAndMetasTopView.vue'
 import CountryChosenView from '@/views/CountryChosen/MainLayout.vue'
 import IndicadoresTopView from '@/views/CountryChosen/IndicadoresTopView.vue'
 import ComparacaoView from '@/views/ComparacaoView.vue'
+import PagamentosTopView from '@/views/CountryChosen/PagamentosTopView.vue'
 
 const rotas = [
   {
@@ -52,9 +53,12 @@ const rotas = [
         }
       },
       {
-        path: 'pagamentos', // Relativo: /:country/pagamentos
+        path: 'pagamentos',
         name: 'pagamentos',
-        component: PagamentosView,
+        components: {
+          default: PagamentosView,
+          top: PagamentosTopView,
+        }
       },
     ],
   },

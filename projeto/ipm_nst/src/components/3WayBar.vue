@@ -12,7 +12,7 @@ const codigoPais = computed(() =>
 
 const separadores = [
   { label: 'Marcos e Metas', route: 'marcosandmetas' as TabRoute },
-  { label: 'Indicadores', route: 'indicadores' as TabRoute },
+  { label: 'Indicadores comuns', route: 'indicadores' as TabRoute },
   { label: 'Desembolsos', route: 'pagamentos' as TabRoute },
 ]
 </script>
@@ -36,7 +36,7 @@ const separadores = [
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2px;
-  width: min(100%, 760px);
+  width: min(100%, 95%);
   margin: 24px auto 0;
   padding: 3px;
   border-radius: 999px;

@@ -3,6 +3,7 @@
 
 <template>
   <div class="ind-top-wrapper">
+    <p class="pagina-subtitulo">Lista de 14 indicadores de reporte obrigatório e semestral por todos os países</p>
     <div class="alerta-prazo">
       <span class="alerta-icon">⏰</span>
       <div>
@@ -28,4 +29,5 @@
 .resumo-valor { font-size: 28px; font-weight: 800; color: #31499a; }
 .resumo-valor.azul { color: #2b4fa0; }
 .resumo-label { font-size: 12px; color: #888; margin-top: 4px; }
+.pagina-subtitulo { font-size: 13px; color: #888; margin: 0 0 16px; }
 </style>

@@ -23,7 +23,6 @@ function positionCta() {
 
   const swRect = swCard.getBoundingClientRect()
   const ctaEl = floatingCta.value
-  const ctaW = ctaEl.offsetWidth
   const ctaH = ctaEl.offsetHeight
 
   const left = swRect.right - containerRect.left + 12
@@ -78,23 +77,18 @@ onBeforeUnmount(() => {
         </RouterLink>
       </div>
 
-      <!-- floating CTA aligned to Sweden on wide screens; footer used as fallback on small screens -->
-      <div ref="floatingCta" class="floating-cta" :style="ctaStyle" @click="$router.push('/comparacao')">
-        <div class="footer-hint">
-          Clica aqui →
-          <span>Para comparares valores entre países diferentes</span>
-        </div>
-        <RouterLink to="/comparacao" class="btn-primary btn-small">Comparação Regional</RouterLink>
-      </div>
-
-      <div class="countries-footer">
-        <div class="footer-hint" @click="$router.push('/comparacao')">
-          Clica aqui →
-          <span>Para comparares valores entre países diferentes</span>
-        </div>
-        <RouterLink to="/comparacao" class="btn-primary">Comparação Regional</RouterLink>
+      <div class="countries-grid">
+        <RouterLink to="/comparacao" class="comparison-card">
+          <div class="comparison-icon">→</div>
+          <div class="comparison-text">
+            <div class="comparison-title">Clica aqui</div>
+            <div class="comparison-subtitle">Para comparares valores entre países diferentes</div>
+          </div>
+          <div class="btn-primary btn-small"></div>
+        </RouterLink>
       </div>
     </div>
+
   </section>
 </template>
 
@@ -123,6 +117,50 @@ onBeforeUnmount(() => {
 .country-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.comparison-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+
+.comparison-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.comparison-icon {
+  font-size: 32px;
+  color: #31499a;
+  font-weight: bold;
+}
+
+.comparison-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.comparison-title {
+  font-weight: 600;
+  color: #31499a;
+  font-size: 14px;
+}
+
+.comparison-subtitle {
+  font-size: 12px;
+  color: #9a9a9a;
 }
 
 .country-flag {

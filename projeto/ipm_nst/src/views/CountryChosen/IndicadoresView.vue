@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRecuperacaoStore } from '@/stores/recuperacao'
+
+// --- 1. INTERFACE DE CONTRATO ---
+interface Indicador {
+  id: string | number;
+  titulo: string;
+  descricao: string;
+  infoDetalhada?: string;
+}
 
 const store = useRecuperacaoStore()
 const mostrarModalInfo = ref(false)
 const mostrarModalCSV = ref(false)
-const indicadorSelecionado = ref<any>(null)
+const indicadorSelecionado = ref<Indicador | null>(null)
 
 onMounted(async () => {
   if (store.indicadores.length === 0) {
@@ -13,7 +21,12 @@ onMounted(async () => {
   }
 })
 
-function abrirInfo(indicador: any) {
+// --- 2. SOLUÇÃO DO BUG VISUAL: Garantir tipagem forte vinda da Store ---
+const listaIndicadores = computed(() => {
+  return (store.indicadores || []) as Indicador[]
+})
+
+function abrirInfo(indicador: Indicador) {
   indicadorSelecionado.value = indicador
   mostrarModalInfo.value = true
 }
@@ -22,7 +35,7 @@ function abrirInfo(indicador: any) {
 <template>
   <div class="indicadores-wrapper">
     <div class="indicadores-lista">
-      <div v-for="(ind, i) in store.indicadores" :key="ind.id" class="indicador-item">
+      <div v-for="(ind, i) in listaIndicadores" :key="ind.id" class="indicador-item">
         <div class="indicador-num">{{ i + 1 }}</div>
         <div class="indicador-info">
           <h4>{{ ind.titulo }}</h4>
@@ -40,7 +53,10 @@ function abrirInfo(indicador: any) {
         <button class="modal-fechar" @click="mostrarModalInfo = false">✕</button>
         <div class="modal-titulo">{{ indicadorSelecionado?.titulo }}</div>
         <div class="modal-sub">{{ indicadorSelecionado?.descricao }}</div>
-        <div class="modal-corpo"><strong>Informação Detalhada</strong><br><br>{{ indicadorSelecionado?.infoDetalhada }}</div>
+        <div class="modal-corpo">
+          <strong>Informação Detalhada</strong><br><br>
+          {{ indicadorSelecionado?.infoDetalhada }}
+        </div>
         <button class="modal-btn-ok" @click="mostrarModalInfo = false">OK</button>
       </div>
     </div>

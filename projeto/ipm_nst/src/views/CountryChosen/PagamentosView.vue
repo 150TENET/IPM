@@ -1,273 +1,210 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useRecuperacaoStore } from '@/stores/recuperacao'
 
-const pesquisaBenef = ref('')
-const categoriaBenef = ref('')
+interface KohesioProjeto {
+  Operation_Unique_Identifier: string;
+  Operation_Name_English: string;
+  Operation_Start_Date: string;
+  Operation_End_Date: string;
+  Project_EU_Budget: number;
+  Beneficiary_Unique_Identifier: string;
+  Category_Label: string;
+}
+
 const route = useRoute()
-const store = useRecuperacaoStore()
-const subTab = ref(0)
+const listaProjetos = ref<KohesioProjeto[]>([])
+const aCarregar = ref(false)
 const pesquisa = ref('')
-const categoria = ref('')
-const mostrarExportar = ref(false)
+const filtroStatus = ref('')
 
-onMounted(async () => {
-  if (route.params.country) {
-    await store.carregarPagamentos(route.params.country as string)
-    await store.carregarBeneficiarios(route.params.country as string)
+async function carregarTabelaPagamentos() {
+  const paisId = route.params.country as string
+  if (!paisId) return
+
+  aCarregar.value = true
+  try {
+    const res = await fetch(`http://localhost:3000/${paisId.toLowerCase()}-kohesio`)
+    if (res.ok) {
+      listaProjetos.value = await res.json()
+    }
+  } catch (err) {
+    console.error('Erro ao ler tabela Kohesio:', err)
+  } finally {
+    aCarregar.value = false
   }
+}
+
+// --- LÓGICA DE FILTRAGEM INTELIGENTE ---
+const projetosFiltrados = computed(() => {
+  return listaProjetos.value.filter(p => {
+    // 1. Filtro por Texto (Nome do projeto, Beneficiário ou Categoria)
+    const termo = pesquisa.value.toLowerCase()
+    const bateTexto =
+      (p.Operation_Name_English || '').toLowerCase().includes(termo) ||
+      (p.Beneficiary_Unique_Identifier || '').toLowerCase().includes(termo) ||
+      (p.Category_Label || '').toLowerCase().includes(termo)
+
+    // 2. Filtro por Estado (Calulado com base no ano de fim "2025" vs ano atual de 2026)
+    const concluido = (p.Operation_End_Date || '').includes('2024') || (p.Operation_End_Date || '').includes('2025')
+    const estadoCalculado = concluido ? 'Concluído' : 'Em curso'
+    const bateStatus = !filtroStatus.value || estadoCalculado === filtroStatus.value
+
+    return bateTexto && bateStatus
+  })
 })
 
-const pagamentosFiltrados = computed(() =>
-  (store.pagamentos as any[]).filter(p =>
-    (!pesquisa.value || p.beneficiario?.toLowerCase().includes(pesquisa.value.toLowerCase()) || p.data?.includes(pesquisa.value)) &&
-    (!categoria.value || p.categoria === categoria.value)
-  )
-)
+function extrairIdBeneficiario(url: string | null): string {
+  if (!url) return 'Geral'
+  return url.split('/').pop() || 'ID Autónomo'
+}
 
-const beneficiariosFiltrados = computed(() =>
-  (store.beneficiarios as any[]).filter(b =>
-    (!pesquisaBenef.value || b.nome?.toLowerCase().includes(pesquisaBenef.value.toLowerCase())) &&
-    (!categoriaBenef.value || b.categoria === categoriaBenef.value)
-  )
-)
+watch(() => route.params.country, () => carregarTabelaPagamentos())
+onMounted(() => carregarTabelaPagamentos())
 </script>
 
 <template>
-  <div class="pag-wrapper">
-    <div class="subtabs-wrapper">
-      <button class="subtab" :class="{ active: subTab === 0 }" @click="subTab = 0">Detalhes de Pagamentos</button>
-      <button class="subtab" :class="{ active: subTab === 1 }" @click="subTab = 1">Top 100 Beneficiários</button>
-    </div>
+  <div class="pagamentos-tabela-panel">
 
-    <!-- Pagamentos -->
-    <div v-show="subTab === 0" class="table-container">
-      <div class="table-header">
-        <div>
-          <h3>Pagamentos Efetuados pela UE</h3>
-          <p>Discriminação de datas, montantes e tipologias</p>
+    <div class="table-card-frame">
+      <div class="table-actions-row">
+        <div class="search-box-wrapper">
+          <input
+            v-model="pesquisa"
+            type="text"
+            placeholder="Pesquisar por beneficiário ou categoria..."
+            class="input-pesquisa"
+          />
         </div>
-        <button class="btn-exportar" @click="mostrarExportar = true">📊 Exportar</button>
-      </div>
-      <div class="filtros">
-        <input v-model="pesquisa" class="search-input" placeholder="Pesquisar por beneficiário ou categoria">
-        <select v-model="categoria" class="select-filter">
-          <option value="">Selecione uma opção</option>
-          <option>Digital</option>
-          <option>Clima</option>
-          <option>Saúde</option>
-          <option>Educação</option>
-          <option>Infraestruturas</option>
-        </select>
-      </div>
-      <table>
-        <thead><tr><th>Data</th><th>Beneficiário</th><th>Montante</th><th>Categoria</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr v-for="p in pagamentosFiltrados" :key="p.id">
-            <td>{{ p.data }}</td>
-            <td>{{ p.beneficiario }}</td>
-            <td class="montante">{{ p.montante }}</td>
-            <td>{{ p.categoria }}</td>
-            <td><span class="badge" :class="p.status === 'pago' ? 'badge-done' : 'badge-prog'">{{ p.status === 'pago' ? 'Concluído' : 'Em Progresso' }}</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
 
-    <!-- Beneficiários -->
-    <div v-show="subTab === 1" class="table-container">
-      <div class="table-header">
-        <div>
-          <h3>Top 100 Beneficiários</h3>
-          <p>Maiores recetores de fundos no país</p>
+        <div class="filter-dropdown-wrapper">
+          <select v-model="filtroStatus" class="select-status">
+            <option value="">Filtrar por Status (Todos)</option>
+            <option value="Concluído">Concluído</option>
+            <option value="Em curso">Em curso</option>
+          </select>
         </div>
-        <button class="btn-exportar" @click="mostrarExportar = true">📊 Exportar</button>
       </div>
-      <div class="filtros">
-        <input v-model="pesquisaBenef" class="search-input" placeholder="Pesquisar pelo nome do beneficiário">
-        <select v-model="categoriaBenef" class="select-filter">
-          <option value="">Selecione uma opção</option>
-          <option>Digital</option>
-          <option>Clima</option>
-          <option>Saúde</option>
-          <option>Educação</option>
-          <option>Infraestruturas</option>
-        </select>
+
+      <div v-if="aCarregar" class="table-loading">
+        A carregar dados financeiros em tempo real...
       </div>
-      <table>
-        <thead><tr><th>Rank</th><th>Nome do Beneficiário</th><th>Valor Total</th><th>Nº Pagamentos</th><th>Categoria</th><th>Último Pagamento</th></tr></thead>
-        <tbody>
-          <tr v-for="b in beneficiariosFiltrados" :key="b.id">
-            <td><strong>{{ b.rank }}</strong></td>
-            <td>{{ b.nome }}</td>
-            <td class="montante">{{ b.total }}</td>
-            <td>{{ b.numeroPagamentos }}</td>
-            <td>{{ b.categoria }}</td>
-            <td>{{ b.ultimoPagamento }}</td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div v-else class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th style="width: 110px;">Data Início</th>
+              <th>Beneficiário / Projeto</th>
+              <th style="width: 140px;">Montante UE</th>
+              <th>Categoria de Intervenção</th>
+              <th style="width: 120px; text-align: center;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="p in projetosFiltrados" :key="p.Operation_Unique_Identifier">
+              <td class="date-cell">{{ p.Operation_Start_Date }}</td>
+              <td>
+                <div class="beneficiary-info">
+                  <span class="b-id">Ref: {{ extrairIdBeneficiario(p.Beneficiary_Unique_Identifier) }}</span>
+                  <span class="p-title" :title="p.Operation_Name_English">{{ p.Operation_Name_English }}</span>
+                </div>
+              </td>
+              <td class="amount-cell">
+                {{ Number(p.Project_EU_Budget).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }) }}
+              </td>
+              <td class="category-cell" :title="p.Category_Label">
+                {{ p.Category_Label }}
+              </td>
+              <td style="text-align: center;">
+                <span :class="['status-tag', (p.Operation_End_Date.includes('2024') || p.Operation_End_Date.includes('2025')) ? 'concluido' : 'em-curso']">
+                  {{ (p.Operation_End_Date.includes('2024') || p.Operation_End_Date.includes('2025')) ? 'Concluído' : 'Em curso' }}
+                </span>
+              </td>
+            </tr>
+            <tr v-if="projetosFiltrados.length === 0">
+              <td colspan="5" class="empty-table-row">
+                Nenhum pagamento registado nesta categoria para o país selecionado.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Modal exportar -->
-    <div v-if="mostrarExportar" class="modal-fundo" @click.self="mostrarExportar = false">
-      <div class="modal-escuro">
-        <button class="modal-fechar" @click="mostrarExportar = false">✕</button>
-        <div style="font-size:38px;margin-bottom:12px;">⬇️</div>
-        <div>Os dados foram exportados com sucesso.<br>Verifique a pasta de Transferências no seu dispositivo.</div>
-      </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
-.pag-wrapper { padding: 20px 40px; }
-.subtabs-wrapper {
+.pagamentos-tabela-panel { width: 100%; margin-top: 12px; }
+
+.table-card-frame {
   background: white;
-  border-radius: 999px;
-  padding: 4px;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 24px rgba(20, 28, 55, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.table-actions-row {
   display: flex;
-  margin: 0 0 16px 0;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.search-box-wrapper { flex: 1; }
+.input-pesquisa {
   width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  outline: none;
 }
 
-.subtab {
-  flex: 1;
-  padding: 9px;
-  border: none;
-  background: none;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #31499a;
+.select-status {
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.88rem;
+  outline: none;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.subtab.active {
-  background: #eef2ff;
-  color: #20306b;
-  box-shadow: inset 0 0 0 1px rgba(49, 73, 154, 0.16);
+.table-responsive { overflow-x: auto; }
+.custom-table { width: 100%; border-collapse: collapse; text-align: left; }
+
+.custom-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 12px 14px;
+  border-bottom: 2px solid #e2e8f0;
 }
 
-.subtab:not(.active):hover {
-  background: rgba(49, 73, 154, 0.08);
+.custom-table td {
+  padding: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.88rem;
+  color: #334155;
+  vertical-align: middle;
 }
 
-.table-container { 
-  background: white; 
-  border-radius: 10px; 
-  padding: 20px 24px; 
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05); 
-  }
-.table-header { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: flex-start; 
-  margin-bottom: 14px; 
-  }
-.table-header h3 { 
-  font-size: 15px; 
-  color: #31499a; 
-  font-weight: 800; 
-  margin: 0 0 2px; 
-  }
-.table-header p { 
-  font-size: 11px; 
-  color: #888; 
-  margin: 0; 
-  }
-.filtros { 
-  display: flex; 
-  gap: 10px; 
-  margin-bottom: 14px; }
-.search-input { 
-  flex: 1; 
-  border: 1px solid #dde0e8; 
-  border-radius: 8px; 
-  padding: 7px 10px; 
-  font-size: 12px; 
-  background: #f8f9fc; 
-  outline: none; 
-  }
-.select-filter { 
-  border: 1px solid #dde0e8; 
-  border-radius: 8px; 
-  padding: 7px 10px; 
-  font-size: 12px; 
-  background: white; 
-  outline: none; 
-  cursor: pointer; 
-  min-width: 150px; 
-  }
-table { 
-  width: 100%; 
-  border-collapse: collapse; 
-  }
-th { font-size: 11px; font-weight: 700; color: #888; text-align: left; padding: 7px 10px; border-bottom: 1px solid #dde0e8; }
-td { font-size: 12px; padding: 10px; border-bottom: 1px solid #f0f0f6; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: #f8f9fc; }
-.montante { 
-  color: #2b4fa0; 
-  font-weight: 700; 
-  }
-.badge { 
-  border-radius: 20px; 
-  padding: 3px 9px; 
-  font-size: 11px; 
-  font-weight: 700; 
-  }
-.badge-done { 
-  background: #e0f5e8; 
-  color: #2d7a4f; 
-  }
-.badge-prog { 
-  background: #e8eef8; 
-  color: #2b4fa0; 
-  }
-.btn-exportar { 
-  background: #1a7a2a; 
-  color: white; 
-  border: none; 
-  border-radius: 8px; 
-  padding: 8px 14px; 
-  font-size: 12px; 
-  font-weight: 700; 
-  cursor: pointer; 
-  display: flex; 
-  align-items: center; 
-  gap: 6px; 
-  }
-.modal-fundo { 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0,0,0,0.4); 
-  z-index: 1000; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  }
-.modal-escuro { 
-  background: #555; 
-  color: white; 
-  text-align: center; 
-  border-radius: 14px; 
-  padding: 26px 30px; 
-  max-width: 340px; 
-  width: 90%; 
-  position: relative; 
-  }
-.modal-fechar { 
-  position: absolute; 
-  top: 10px; 
-  right: 13px; 
-  background: none; 
-  border: none; 
-  font-size: 17px; 
-  cursor: pointer; 
-  color: white; 
-  }
+.date-cell { font-weight: 600; color: #64748b; }
+.amount-cell { font-weight: 700; color: #1e3a8a; }
+
+.beneficiary-info { display: flex; flex-direction: column; gap: 2px; }
+.b-id { font-size: 0.72rem; font-weight: 700; color: #2563eb; }
+.p-title { font-weight: 600; color: #1e293b; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.category-cell { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #475569; }
+
+.status-tag { padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; display: inline-block; }
+.status-tag.concluido { background: #d1fae5; color: #065f46; }
+.status-tag.em-curso { background: #dbeafe; color: #1e40af; }
+
+.table-loading, .empty-table-row { text-align: center; padding: 40px; color: #64748b; font-weight: 500; }
 </style>

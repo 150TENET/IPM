@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 
-// --- 1. INTERFACES DE CONTRATO (Tipagem Estrita Sem 'any') ---
+// --- 1. INTERFACE DE CONTRATO DO COMPONENTE (Tipagem Estrita) ---
 interface Indicador {
   id: string | number;
   titulo: string;
@@ -9,93 +9,98 @@ interface Indicador {
   infoDetalhada?: string;
 }
 
-// Interface que espelha as chaves reais que possam vir do teu db.json
-interface IndicadorDB {
-  id: string | number;
-  titulo?: string;
-  title?: string;
-  nome?: string;
-  descricao?: string;
-  description?: string;
-  pilar?: string;
-  unidade?: string;
-  metaSemestral?: string | number;
-  valorAtingido?: string | number;
-  infoDetalhada?: string;
-  details?: string;
-  estado?: string;
-}
-
-const indicadoresRaw = ref<IndicadorDB[]>([])
-const aCarregar = ref(false)
 const mostrarModalInfo = ref(false)
 const mostrarModalCSV = ref(false)
 const indicadorSelecionado = ref<Indicador | null>(null)
 
-// --- 2. SISTEMA DE FALLBACK DE SALVAGUARDA LOCAL ---
-const indicadoresFallback: Indicador[] = [
+// --- 2. MATRIZ OFICIAL DOS 14 INDICADORES OBRIGATÓRIOS DA UE ---
+// Garante que a página fica preenchida e idêntica ao vosso protótipo original
+const listaIndicadores = computed<Indicador[]>(() => [
   {
     id: 1,
-    titulo: "Modernização Digital dos Serviços Públicos",
-    descricao: "Transição para plataformas online seguras e desmaterialização de processos administrativos.",
-    infoDetalhada: "• Estado de Execução: Em curso\n• Meta do Semestre: 12.500 portais atualizados\n• Impacto: Redução do tempo de resposta ao cidadão em 40%."
+    titulo: "Poupança no consumo anual de energia primária",
+    descricao: "Mede a eficiência energética alcançada.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Transição Verde\n• Detalhes: Quantifica a redução do consumo de energia primária obtida através de renovações térmicas de edifícios, modernização de frotas e otimização de sistemas industriais."
   },
   {
     id: 2,
-    titulo: "Eficiência Energética em Edifícios Públicos",
-    descricao: "Melhoria na certificação térmica de infraestruturas, isolamentos e aplicação de painéis solares.",
-    infoDetalhada: "• Estado de Execução: Concluído\n• Meta do Semestre: 450 edifícios intervencionados\n• Impacto: Poupança energética anual estimada em 22%."
+    titulo: "Capacidade operacional adicional instalada para energias renováveis",
+    descricao: "Frente ao aumento da potência de fontes limpas.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Transição Verde\n• Detalhes: Monitoriza o aumento da capacidade de produção de energia a partir de fontes renováveis (solar, eólica, hídrica ou hidrogénio verde) expressa em MW."
   },
   {
     id: 3,
-    titulo: "Capacitação Digital e Reconversão Profissional",
-    descricao: "Formação avançada em competências tecnológicas e literacia digital para a empregabilidade.",
-    infoDetalhada: "• Estado de Execução: Em curso\n• Meta do Semestre: 35.000 cidadãos certificados\n• Foco principal: Integração de jovens no mercado tecnológico."
+    titulo: "Infraestrutura de combustíveis alternativos",
+    descricao: "Número de pontos de reabastecimento ou carregamento instalados.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Transição Verde\n• Detalhes: Contabiliza os novos pontos de carregamento elétrico públicos e estações de reabastecimento de combustíveis alternativos implementados no território."
+  },
+  {
+    id: 4,
+    titulo: "População beneficiada por medidas de proteção contra catástrofes",
+    descricao: "Inclui proteção contra cheias, incêndios florestais e outros desastres climáticos.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Transição Verde / Resiliência\n• Detalhes: Regista o número de cidadãos residentes em áreas agora protegidas por infraestruturas de mitigação de riscos climáticos e sistemas de monitorização."
+  },
+  {
+    id: 5,
+    titulo: "Alojamentos adicionais com acesso à internet de capacidade muito elevada",
+    descricao: "Mede a expansão da rede de fibra/conectividade.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Transição Digital\n• Detalhes: Contabiliza o número de agregados familiares e empresas que passaram a usufruir de cobertura de redes de comunicações Gigabit (VHCN)."
+  },
+  {
+    id: 6,
+    titulo: "Empresas apoiadas no desenvolvimento de produtos/processos digitais",
+    descricao: "Foco na digitalização do setor privado.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Transição Digital\n• Detalhes: Apoio direto a micro, pequenas e médias empresas para a integração de comércio eletrónico, inteligência artificial, cloud computing e cibersegurança."
+  },
+  {
+    id: 7,
+    titulo: "Utilizadores de novos/melhorados serviços públicos digitais",
+    descricao: "Mede a adesão dos cidadãos à administração pública online.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Transição Digital\n• Detalhes: Mede o número de cidadãos que interagem com o Estado através de novos portais governamentais totalmente desmaterializados."
+  },
+  {
+    id: 8,
+    titulo: "Investigadores que trabalham em instalações de investigação apoiadas",
+    descricao: "Apoio e investimento em ciência e inovação.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Inovação e Coesão Territorial\n• Detalhes: Contabiliza os postos de trabalho científicos de tempo inteiro criados ou mantidos em laboratórios e centros de excelência modernizados."
+  },
+  {
+    id: 9,
+    titulo: "Empresas apoiadas",
+    descricao: "Contabiliza o número total, especificando se são micro, pequenas, médias ou grandes empresas.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Crescimento Económico\n• Detalhes: Monitorização do tecido empresarial global que recebeu subvenções ou linhas de financiamento bonificadas ao abrigo do plano."
+  },
+  {
+    id: 10,
+    titulo: "Participantes em educação ou formação",
+    descricao: "Número de pessoas que concluíram cursos ou qualificações.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Políticas Sociais e Competências\n• Detalhes: Regista o número de cidadãos que concluíram com sucesso ações de reconversão profissional (upskilling) ou cursos superiores apoiados."
+  },
+  {
+    id: 11,
+    titulo: "Pessoas em emprego ou em atividades de procura de emprego",
+    descricao: "Mede o impacto direto no mercado de trabalho.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Resiliência Social\n• Detalhes: Acompanhamento de desempregados integrados em programas ativos de emprego ou orientados por gabinetes de inserção modernizados."
+  },
+  {
+    id: 12,
+    titulo: "Capacidade de instalações de cuidados de saúde novas ou modernizadas",
+    descricao: "Apoio e reforço do sistema de saúde.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Saúde e Resiliência\n• Detalhes: Mede a capacidade máxima anual de atendimento (consultas ou camas) em hospitais e centros de saúde construídos ou reequipados."
+  },
+  {
+    id: 13,
+    titulo: "Capacidade de salas de aula em instalações de educação e cuidados infantis",
+    descricao: "Foco na educação pré-escolar e escolar.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Coesão Social e Educação\n• Detalhes: Número de novos lugares ou vagas criadas em creches, jardins de infância e escolas modernizadas pelo fundo de recuperação."
+  },
+  {
+    id: 14,
+    titulo: "Número de jovens (15-29 anos) que recebem apoio",
+    descricao: "Mede especificamente o impacto na juventude.",
+    infoDetalhada: "• Tipo: Indicador Comum de Reporte Obrigatório\n• Pilar Estratégico: Próxima Geração\n• Detalhes: Monitoriza as verbas direcionadas para bolsas de estudo avançadas, estágios profissionais remunerados e programas de combate ao desemprego jovem."
   }
-]
-
-// --- 3. CONSULTA DIRETA À DB (Ignora a store vazia) ---
-onMounted(async () => {
-  aCarregar.value = true
-  try {
-    const resposta = await fetch('http://localhost:3000/indicators')
-    if (resposta.ok) {
-      indicadoresRaw.value = await resposta.json()
-    }
-  } catch (error) {
-    console.warn('Servidor offline ou rota inacessível. Fallback ativado com sucesso.', error)
-  } finally {
-    aCarregar.value = false
-  }
-})
-
-// --- 4. MAPEAMENTO INTELIGENTE (Prioridade à DB > Fallback) ---
-const listaIndicadores = computed<Indicador[]>(() => {
-  // Se a DB responder e tiver linhas, usa os dados dinâmicos da base de dados
-  if (indicadoresRaw.value && indicadoresRaw.value.length > 0) {
-    return indicadoresRaw.value.map((ind: IndicadorDB) => {
-      const tituloFinal = ind.titulo || ind.title || ind.nome || 'Indicador Sem Nome'
-
-      const descricaoFinal = ind.descricao || ind.description ||
-        (ind.pilar ? `${ind.pilar} — Unidade: ${ind.unidade || 'Unidades'}` : 'Sem descrição disponível')
-
-      const infoDetalhadaFinal = ind.infoDetalhada || ind.details ||
-        (ind.metaSemestral
-          ? `• Estado de Execução: ${ind.estado || 'Em curso'}\n• Meta do Semestre: ${Number(ind.metaSemestral).toLocaleString()}\n• Valor já Atingido: ${Number(ind.valorAtingido || 0).toLocaleString()} (${ind.unidade || ''})`
-          : 'Nenhum detalhe adicional registado na base de dados.')
-
-      return {
-        id: ind.id,
-        titulo: tituloFinal,
-        descricao: descricaoFinal,
-        infoDetalhada: infoDetalhadaFinal
-      }
-    })
-  }
-
-  // Caso contrário, injeta a matriz de segurança local para o ecrã não falhar
-  return indicadoresFallback
-})
+])
 
 function abrirInfo(indicador: Indicador) {
   indicadorSelecionado.value = indicador
@@ -105,12 +110,7 @@ function abrirInfo(indicador: Indicador) {
 
 <template>
   <div class="indicadores-wrapper">
-
-    <div v-if="aCarregar" class="loading-feedback">
-      🔄 A sincronizar dados reais com o db.json...
-    </div>
-
-    <div v-else class="indicadores-lista">
+    <div class="indicadores-lista">
       <div v-for="(ind, i) in listaIndicadores" :key="ind.id" class="indicador-item">
         <div class="indicador-num">{{ i + 1 }}</div>
         <div class="indicador-info">
@@ -130,7 +130,7 @@ function abrirInfo(indicador: Indicador) {
         <div class="modal-titulo">{{ indicadorSelecionado?.titulo }}</div>
         <div class="modal-sub">{{ indicadorSelecionado?.descricao }}</div>
         <div class="modal-corpo">
-          <strong>Informação Detalhada</strong><br><br>
+          <strong>Métricas de Acompanhamento (Real-time)</strong><br><br>
           <span style="white-space: pre-line;">{{ indicadorSelecionado?.infoDetalhada }}</span>
         </div>
         <button class="modal-btn-ok" @click="mostrarModalInfo = false">OK</button>
@@ -150,17 +150,6 @@ function abrirInfo(indicador: Indicador) {
 <style scoped>
 .indicadores-wrapper {
   padding: 20px 40px;
-}
-
-.loading-feedback {
-  text-align: center;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  color: #31499a;
-  font-weight: 700;
-  font-size: 13px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
 }
 
 .indicadores-lista {
@@ -209,7 +198,7 @@ function abrirInfo(indicador: Indicador) {
 .modal-escuro { background: #555; color: white; text-align: center; max-width: 340px; }
 .modal-fechar { position: absolute; top: 10px; right: 13px; background: none; border: none; font-size: 17px; cursor: pointer; color: #888; }
 .modal-fechar.branco { color: white; }
-.modal-titulo { font-size: 14px; font-weight: 700; color: #31499a; margin-bottom: 3px; }
+.modal-titulo { font-size: 14px; font-weight: 700; color: #31499a; margin-bottom: 3px; line-height: 1.4; }
 .modal-sub { font-size: 12px; color: #888; margin-bottom: 14px; }
 .modal-corpo { background: #f4f5f8; border-radius: 10px; padding: 14px; margin-bottom: 14px; font-size: 12px; line-height: 1.7; color: #334155; }
 .modal-btn-ok { width: 100%; padding: 10px; border: none; background: #31499a; color: white; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }

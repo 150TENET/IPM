@@ -18,7 +18,7 @@ import ThreeWayBar from '@/components/3WayBar.vue'
 
 <style scoped>
 .layout-pie {
-  max-height: 350px;
+  height: 250px;
   overflow-y: auto;
 }
 

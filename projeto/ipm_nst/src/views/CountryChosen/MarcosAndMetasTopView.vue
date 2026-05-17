@@ -166,24 +166,24 @@ onMounted(() => carregarIndicadoresTopo())
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 10px;
   width: 100%;
 }
 
 .kpi-card {
   background-color: #ffffff;
   border-radius: 14px;
-  padding: 22px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 4px 14px rgba(20, 28, 55, 0.03);
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(20, 28, 55, 0.03);
   border: 1px solid #f1f5f9;
 }
 
 .icon-box {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 10px;
   display: flex;
   align-items: center;

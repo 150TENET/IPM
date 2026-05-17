@@ -7,8 +7,6 @@ import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRecuperacaoStore } from '@/stores/recuperacao'
 import type { MilestoneItem } from './marcosAndMetas.data'
-import { ref } from 'vue'
-const mostrarExportar = ref(false)
 
 
 const route = useRoute()
@@ -34,6 +32,21 @@ const fetchedMilestones = computed<MilestoneItem[]>(() => {
 
 <template>
   <section class="marcos-page">
+    <header class="page-hero">
+      <div>
+        <p class="kicker">Marcos e Metas</p>
+        <h1>Execução por categoria</h1>
+        <p class="description">
+          Visão modular dos principais marcos do PRR, com distribuição por área e os itens mais
+          recentes.
+        </p>
+      </div>
+
+      <div class="hero-chip">
+        <span></span>
+        Atualizado em 22 abr 2026
+      </div>
+    </header>
 
     <div class="charts-grid">
       <BarChartCard
@@ -54,19 +67,6 @@ const fetchedMilestones = computed<MilestoneItem[]>(() => {
       subtitle="Implementações e metas acompanhadas recentemente"
       :items="fetchedMilestones"
     />
-
-    <div class="export-row">
-     <button class="btn-exportar-excel" @click="mostrarExportar = true">📊 Exportar</button>
-    </div>
-
-    <div v-if="mostrarExportar" class="modal-fundo" @click.self="mostrarExportar = false">
-      <div class="modal-escuro">
-        <button class="modal-fechar" @click="mostrarExportar = false">✕</button>
-        <div style="font-size:38px;margin-bottom:12px;">⬇️</div>
-        <div>Os dados foram exportados com sucesso.<br>Verifique a pasta de Transferências no seu dispositivo.</div>
-      </div>
-    </div>
-
   </section>
 </template>
 
@@ -134,55 +134,6 @@ const fetchedMilestones = computed<MilestoneItem[]>(() => {
   grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.95fr);
   gap: 18px;
 }
-
-.export-row { 
-  display: flex; 
-  justify-content: flex-end; 
-  margin-top: 16px; 
-  }
-
-.btn-exportar-excel { 
-  background: #1a7a2a; 
-  color: white; 
-  border: none; 
-  border-radius: 8px; 
-  padding: 10px 18px; 
-  font-size: 13px; 
-  font-weight: 700; 
-  cursor: pointer; 
-  }
-
-.modal-fundo { 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0,0,0,0.4); 
-  z-index: 1000; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  }
-
-.modal-escuro { 
-  background: #555; 
-  color: white; 
-  text-align: center; 
-  border-radius: 14px; 
-  padding: 26px 30px; 
-  max-width: 340px; 
-  width: 90%; 
-  position: relative; 
-  }
-
-.modal-fechar { 
-  position: absolute; 
-  top: 10px; 
-  right: 13px; 
-  background: none; 
-  border: none; 
-  font-size: 17px; 
-  cursor: pointer; 
-  color: white; 
-  }
 
 @media (max-width: 1100px) {
   .charts-grid,

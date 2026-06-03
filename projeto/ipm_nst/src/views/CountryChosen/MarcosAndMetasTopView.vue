@@ -28,6 +28,7 @@ const projetosKohesio = ref<KohesioProjeto[]>([])
 const listaMarcosMetasRaw = ref<MilestoneRow[]>([])
 const aCarregar = ref(false)
 
+
 // --- 2. DICIONÁRIO ALARGADO DE NORMALIZAÇÃO DE PAÍSES (Suporta toda a UE) ---
 const mapearPaisParaDB = (param: string): string => {
   const p = param.toLowerCase()

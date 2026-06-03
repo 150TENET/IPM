@@ -8,8 +8,6 @@ cd db
 python3 build_jsondb.py comp
 
 cd ..
-```
-```
 npm run dev
 ```
 
@@ -17,3 +15,5 @@ npm run dev
 * Beatriz Sousa Martins - A109958	
 * Gabriel Andrade Teodoro - A109749
 * Joana Catarina Fernandes Rodrigues- A112407
+
+Vídeo de apresentação: https://drive.google.com/file/d/1Rm3y7Vr1sm3Qnh1OsCp5Jdo_S_154Jat/view?usp=sharing 
